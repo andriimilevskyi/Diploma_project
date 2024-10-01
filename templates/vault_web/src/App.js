@@ -1,29 +1,21 @@
-import React, { useState } from "react";
-import FilterMenu from "./components/FilterMenu";
-import ProductGrid from "./components/ProductGrid";
-import "./App.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import React from "react";
+import './App.css';
+import Header from "./components/Header.js";
+import Footer from "./components/Footer.js";
+import MainContentRealisator from "./components/MainContentRealisator";
 
 function App() {
-  const [filterMagSafe, setFilterMagSafe] = useState(false);
+    return (
+      <div className="App">
+        <Header />
 
-  const handleFilterChange = (isMagSafeCompatible) => {
-    setFilterMagSafe(isMagSafeCompatible);
-  };
+        <div className="main-content">
+          <MainContentRealisator />
+        </div>
 
-  return (
-    <div className="App">
-      <Header />
-
-      <div className="main-content">
-        <FilterMenu onFilterChange={handleFilterChange} />
-        <ProductGrid filterMagSafe={filterMagSafe} />
+        <Footer />
       </div>
-      
-      <Footer />
-    </div>
-  );
-}
+    );
+  }
 
 export default App;

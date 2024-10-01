@@ -1,14 +1,49 @@
 import React, { useState } from 'react';
 import './FilterMenu.css';
 
-const FilterMenu = () => {
+const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
   const [isColourOpen, setIsColourOpen] = useState(false);
-  const [isPriceOpen, setIsPriceOpen] = useState(false);
 
   const toggleFeatures = () => setIsFeaturesOpen(!isFeaturesOpen);
   const toggleColour = () => setIsColourOpen(!isColourOpen);
-  const togglePrice = () => setIsPriceOpen(!isPriceOpen);
+
+  // Обробка чекбоксів
+  const handleCheckboxChange = (e) => {
+    const { id, checked } = e.target;
+
+    if (id.startsWith("color-")) {
+      // Обробка кольорів через подію click
+      const color = id.split('-')[1];
+      onFilterChange({
+        ...filters,
+        colors: {
+          ...filters.colors,
+          [color]: checked,
+        },
+      });
+    } else {
+      onFilterChange({
+        ...filters,
+        [id]: checked,
+      });
+    }
+  };
+
+  // Обробка кліку для вибору кольору
+  const handleColorClick = (color) => {
+    onFilterChange({
+      ...filters,
+      colors: {
+        ...filters.colors,
+        [color]: !filters.colors[color], // Змінюємо стан кольору
+      },
+    });
+  };
+
+  const applyFilters = () => {
+    onApplyFilters(); // Викликаємо функцію для застосування фільтрів
+  };
 
   return (
     <div className="filter-menu">
@@ -22,52 +57,45 @@ const FilterMenu = () => {
         </div>
         {isFeaturesOpen && (
           <ul className="filter-options">
-            <li><input type="checkbox" id="magsafe" /> MagSafe® Compatible</li>
-            <li><input type="checkbox" id="printed" /> Printed Designs</li>
-            <li><input type="checkbox" id="superthin" /> Super Thin</li>
-            <li><input type="checkbox" id="ultra" /> Ultra Protective</li>
+            <li>
+              <input type="checkbox" id="magsafe" checked={filters.magsafe} onChange={handleCheckboxChange} />
+              MagSafe® Compatible
+            </li>
+            <li>
+              <input type="checkbox" id="thin" checked={filters.thin} onChange={handleCheckboxChange} />
+              Thin Protective
+            </li>
+            <li>
+              <input type="checkbox" id="designs" checked={filters.designs} onChange={handleCheckboxChange} />
+              Spec Designs
+            </li>
           </ul>
         )}
       </div>
 
-
       {/* Colour Section */}
       <div className="filter-section">
         <div className="filter-header" onClick={toggleColour}>
-          Colour
+          Color
           <span className={`arrow ${isColourOpen ? 'open' : ''}`}>▼</span>
         </div>
         {isColourOpen && (
           <div className="colour-options">
-            <div className="colour-circle black"></div>
-            <div className="colour-circle blue"></div>
-            <div className="colour-circle red"></div>
-            <div className="colour-circle green"></div>
-            <div className="colour-circle yellow"></div>
-            <div className="colour-circle purple"></div>
-            <div className="colour-circle orange"></div>
+            <div className={`colour-circle black ${filters.colors.black ? 'selected' : ''}`} onClick={() => handleColorClick('black')}></div>
+            <div className={`colour-circle blue ${filters.colors.blue ? 'selected' : ''}`} onClick={() => handleColorClick('blue')}></div>
+            <div className={`colour-circle red ${filters.colors.red ? 'selected' : ''}`} onClick={() => handleColorClick('red')}></div>
+            <div className={`colour-circle green ${filters.colors.green ? 'selected' : ''}`} onClick={() => handleColorClick('green')}></div>
+            <div className={`colour-circle yellow ${filters.colors.yellow ? 'selected' : ''}`} onClick={() => handleColorClick('yellow')}></div>
+            <div className={`colour-circle purple ${filters.colors.purple ? 'selected' : ''}`} onClick={() => handleColorClick('purple')}></div>
+            <div className={`colour-circle orange ${filters.colors.orange ? 'selected' : ''}`} onClick={() => handleColorClick('orange')}></div>
           </div>
         )}
       </div>
 
-      {/* Price Section */}
-      <div className="filter-section">
-        <div className="filter-header" onClick={togglePrice}>
-          Price
-          <span className={`arrow ${isPriceOpen ? 'open' : ''}`}>▼</span>
-        </div>
-        {isPriceOpen && (
-          <div className="price-range">
-            <input type="range" min="0" max="7999" />
-            <div className="price-labels">
-              <span>£0</span>
-              <span>£100</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <button className="apply-filters">Apply Filters</button>
+      {/* Apply Filters Button */}
+      <button className="apply-filters" onClick={applyFilters}>
+        Apply Filters
+      </button>
     </div>
   );
 };
