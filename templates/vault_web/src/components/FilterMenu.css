@@ -1,0 +1,107 @@
+.filter-menu {
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.filter-menu h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.filter-section {
+  border-top: 1px solid #eaeaea;
+  padding: 10px 0;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.arrow {
+  transition: transform 0.3s;
+}
+
+.arrow.open {
+  transform: rotate(180deg); /* Повертаємо стрілку при відкритому меню */
+}
+
+.filter-options {
+  margin-top: 10px;
+  padding-left: 10px;
+}
+
+.filter-options li {
+  list-style-type: none;
+  margin-bottom: 5px;
+}
+
+.colour-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.colour-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.black {
+  background-color: black;
+}
+.blue {
+  background-color: blue;
+}
+.red {
+  background-color: red;
+}
+.green {
+  background-color: green;
+}
+.yellow {
+  background-color: yellow;
+}
+.purple {
+  background-color: purple;
+}
+.orange {
+  background-color: orange;
+}
+
+.price-range {
+  margin-top: 10px;
+}
+
+.price-range input {
+  width: 100%;
+}
+
+.price-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.apply-filters {
+  background-color: #005ab9;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+.apply-filters:hover {
+  background-color: #7e7e7e;
+}

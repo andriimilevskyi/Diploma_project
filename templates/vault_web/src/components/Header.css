@@ -1,0 +1,43 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #fff;
+  border-bottom: 1px solid #eaeaea;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-div {
+  display: flex;
+  width: 1200px;
+  margin: 0 auto;
+  justify-content: space-between;
+}
+
+.header-div .logo {
+  font-size: 24px;
+  font-weight: 700;
+  display: flex;
+  width: auto;
+  padding: 10px 0 0 20px;
+}
+
+.header-div .nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.header-div .nav li {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.header-div .user-actions span {
+  margin-left: 15px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.header-div .user-actions {
+  margin: 14px 0 14px 0;
+}

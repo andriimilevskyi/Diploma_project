@@ -1,0 +1,40 @@
+.product-card {
+  width: 288.46px;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff;
+  text-align: center;
+}
+
+img {
+  width: 288.46px;
+}
+
+.product-card h3 {
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.product-card p {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #005ab9;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 150px;
+  transition: all 0.3s ease-out;
+}
+
+button:hover {
+  background-color: #7e7e7e;
+  color: white;
+  transition: all 0.3s ease-in;
+}
