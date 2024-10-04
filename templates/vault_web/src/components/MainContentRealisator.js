@@ -3,8 +3,7 @@ import FilterMenu from "./FilterMenu";
 import ProductGrid from "./ProductGrid";
 
 const MainContentRealisator = () => {
-  // Стан для тимчасових фільтрів (до натискання кнопки)
-  const [tempFilters, setTempFilters] = useState({
+  const [filters, setFilters] = useState({
     magsafe: false,
     thin: false,
     designs: false,
@@ -13,21 +12,14 @@ const MainContentRealisator = () => {
       blue: false,
       light: false,
       green: false,
+    },
+    priceRange: {
+      min: 0,
+      max: 100,
     },
   });
 
-  // Стан для підтверджених фільтрів (після натискання кнопки)
-  const [confirmedFilters, setConfirmedFilters] = useState({
-    magsafe: false,
-    thin: false,
-    designs: false,
-    colors: {
-      black: false,
-      blue: false,
-      light: false,
-      green: false,
-    },
-  });
+  const [appliedFilters, setAppliedFilters] = useState(null);
 
   const products = [
     {
@@ -80,40 +72,50 @@ const MainContentRealisator = () => {
     },
   ];
 
-  // Обробка зміни тимчасових фільтрів
+  // Функція для перетворення ціни з рядка на число
+  const parsePrice = (priceStr) => {
+    return parseFloat(priceStr.replace("€", "").replace(",", "."));
+  };
+
   const handleFilterChange = (newFilters) => {
-    setTempFilters(newFilters);
+    setFilters(newFilters);
   };
 
-  // Застосування фільтрів після натискання кнопки "Apply Filters"
-  const applyFilters = () => {
-    setConfirmedFilters(tempFilters); // Підтверджуємо вибрані фільтри
+  const handleApplyFilters = () => {
+    if (Object.values(filters).every((val) => !val) && // перевірка на вимкнені фільтри
+        !Object.values(filters.colors).some(Boolean) && // перевірка на вимкнені кольори
+        filters.priceRange.min === 0 && filters.priceRange.max === 100) {
+      setAppliedFilters(null); // Якщо фільтри вимкнені, показуємо всі продукти
+    } else {
+      setAppliedFilters(filters); // Якщо є активні фільтри, застосовуємо їх
+    }
   };
 
-  // Фільтрація продуктів на основі підтверджених фільтрів
-  const filteredProducts = products.filter((product) => {
-    const { magsafe, thin, designs, colors } = confirmedFilters;
 
-    // Логіка фільтрації за характеристиками
-    const passesFeaturesFilter =
-      (!magsafe || product.tags.includes("magsafe")) &&
-      (!thin || product.tags.includes("thin")) &&
-      (!designs || product.tags.includes("designs"));
+  // Якщо фільтри не застосовані, показуємо всі продукти
+  const filteredProducts = appliedFilters
+    ? products.filter((product) => {
+        const { magsafe, thin, designs, colors, priceRange } = appliedFilters;
 
-    // Логіка фільтрації за кольорами
-    const passesColorFilter =
-      !Object.values(colors).some(Boolean) || colors[product.color];
+        const passesFeaturesFilter =
+          (!magsafe || product.tags.includes('magsafe')) &&
+          (!thin || product.tags.includes('thin')) &&
+          (!designs || product.tags.includes('designs'));
 
-    return passesFeaturesFilter && passesColorFilter;
-  });
+        const passesColorFilter =
+          !Object.values(colors).some(Boolean) || colors[product.color];
+
+        // Перевірка фільтру за ціною після перетворення на число
+        const passesPriceFilter =
+          parsePrice(product.price) >= priceRange.min && parsePrice(product.price) <= priceRange.max;
+
+        return passesFeaturesFilter && passesColorFilter && passesPriceFilter;
+      })
+    : products;
 
   return (
     <div className="main-content">
-      <FilterMenu
-        filters={tempFilters}
-        onFilterChange={handleFilterChange}
-        onApplyFilters={applyFilters}
-      />
+      <FilterMenu filters={filters} onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
       <ProductGrid products={filteredProducts} />
     </div>
   );

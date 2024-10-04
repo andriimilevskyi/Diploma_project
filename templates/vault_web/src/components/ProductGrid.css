@@ -1,6 +1,8 @@
 .products-grid {
+    flex: 1;
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* Три колонки */
     gap: 10px; /* Відстань між картками */
     width: calc(100% - 250px); /* Віднімемо ширину бічної панелі */
+    padding-bottom: 50px;
   }

@@ -4,6 +4,10 @@
   text-align: center;
   border-top: 1px solid #eaeaea;
   box-shadow: 10px 0 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .footer-content {
