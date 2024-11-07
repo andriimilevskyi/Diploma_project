@@ -3,7 +3,7 @@ import './App.css';
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import MainContentRealisator from "./components/MainContentRealisator";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProductDetails from './components/ProductDetails'; // Імпортуємо компонент для детальної інформації
 
 function App() {
@@ -11,10 +11,10 @@ function App() {
     <Router>
       <div className="App">
         <Header />
-        <Switch>
+        <Routes>
           <Route path="/" exact component={MainContentRealisator} />
           <Route path="/product/:id" component={ProductDetails} /> {/* Новий маршрут для інфо панелі */}
-        </Switch>
+        </Routes>
         <Footer />
       </div>
     </Router>
