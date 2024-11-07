@@ -23,6 +23,7 @@ const MainContentRealisator = () => {
 
   const products = [
     {
+      id: 1,
       imgSrc: require("../images/fibre.jpg"),
       title: "SAVIOR",
       description: "MagSafe® Compatible Aramid Fibre Phone Case",
@@ -31,6 +32,7 @@ const MainContentRealisator = () => {
       color: "green",
     },
     {
+      id: 2,
       imgSrc: require("../images/plastic.png"),
       title: "CARRION",
       description: "MagSafe® Compatible Clear Phone Case",
@@ -39,6 +41,7 @@ const MainContentRealisator = () => {
       color: "black",
     },
     {
+      id: 3,
       imgSrc: require("../images/silicon.jpg"),
       title: "INLOCK",
       description: "Thin Protective Phone Case",
@@ -47,6 +50,7 @@ const MainContentRealisator = () => {
       color: "blue",
     },
     {
+      id: 4,
       imgSrc: require("../images/bringin.jpg"),
       title: "BRINGIN",
       description: "MagSafe® Compatible Carbon Fibre Case",
@@ -55,6 +59,7 @@ const MainContentRealisator = () => {
       color: "black",
     },
     {
+      id: 5,
       imgSrc: require("../images/defense.jpg"),
       title: "DEFENSE",
       description: "Heavy Duty Defense Case",
@@ -63,6 +68,7 @@ const MainContentRealisator = () => {
       color: "light",
     },
     {
+      id: 6,
       imgSrc: require("../images/holden.jpg"),
       title: "HOLDEN",
       description: "Shockproof Alpha Case",
