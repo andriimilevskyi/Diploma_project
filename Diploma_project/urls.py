@@ -23,11 +23,15 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="iPhone Cases API",
-        default_version='v1',
-        description="API documentation for iPhone Cases",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@iphonecases.local"),
+        title="Case and Order API",
+        default_version="v1",
+        description=(
+            "This API allows you to manage phone cases, orders, "
+            "and order items. Use these endpoints to create, retrieve, "
+            "update, and delete resources."
+        ),
+        terms_of_service="https://www.example.com/terms/",
+        contact=openapi.Contact(email="support@example.com"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,
