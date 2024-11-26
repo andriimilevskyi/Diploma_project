@@ -42,7 +42,7 @@ class Order(models.Model):
     datetime = models.DateTimeField(auto_now_add=True, verbose_name="Order Date")
 
     def __str__(self):
-        return f"Order #{self.id} by {self.first_name} {self.last_name}"
+        return f"Order №{self.id} by {self.first_name} {self.last_name}"
 
     @property
     def total_price(self):
