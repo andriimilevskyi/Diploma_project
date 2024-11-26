@@ -76,6 +76,6 @@ class OrderItemViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_summary="Delete an Order Item by ID")
+    @swagger_auto_schema(operation_summary="Delete an Ordered Item by ID")
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
