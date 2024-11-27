@@ -123,13 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# Define the directory where static files will be collected
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'templates/vault_web/build/static'),  # React static assets
+    os.path.join(BASE_DIR, 'templates/vault_web/build'),  # React static files
 ]
-
-# Path for collecting static files from all apps
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
