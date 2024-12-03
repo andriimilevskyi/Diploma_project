@@ -1,13 +1,15 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import './ProductGrid.css';
+import { products } from "./products";
 
-function ProductGrid({ products }) {
+function ProductGrid() {
   return (
     <section className="products-grid">
       {products.map((product) => (
         <ProductCard
-          key={product.title}
+          id={product.id}
+          key={product.id}
           imgSrc={product.imgSrc}
           title={product.title}
           description={product.description}
