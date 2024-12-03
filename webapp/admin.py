@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Case, Order, OrderItem
 
+
 # Register your models here.
 # class CaseAdmin(admin.ModelAdmin):
 #     list_display = ('id', 'name', 'color', 'material', 'price', 'created_at')
@@ -15,15 +16,23 @@ from .models import Case, Order, OrderItem
 
 @admin.register(Case)
 class CaseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'type', 'color', 'material', 'price', 'created_at')
+    list_display = ('name', 'type', 'color', 'material', 'price', 'created_at', 'image')
     list_filter = ('type', 'color', 'material', 'price')
     search_fields = ('name', 'type', 'color', 'material')
     ordering = ('type', 'name')
     readonly_fields = ('created_at', 'updated_at')
 
+    def image_preview(self, obj):
+        if obj.image:
+            return f"<img src='{obj.image.url}' width='50' height='50' />"
+        return "No Image"
+
+    image_preview.allow_tags = True
+    image_preview.short_description = "Image Preview"
+
     fieldsets = (
         ("Basic Information", {
-            "fields": ('name', 'type', 'color', 'material', 'price')
+            "fields": ('name', 'type', 'color', 'material', 'price', 'image')
         }),
         ("Details", {
             "fields": ('s_description', 'description', 'features'),
@@ -42,6 +51,7 @@ class OrderItemInline(admin.TabularInline):
 
     def total_price(self, obj):
         return obj.total_price
+
     total_price.short_description = 'Total Price (Item)'
 
 
@@ -56,6 +66,7 @@ class OrderAdmin(admin.ModelAdmin):
 
     def total_price(self, obj):
         return obj.total_price
+
     total_price.short_description = 'Total Price (Order)'
 
 

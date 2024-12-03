@@ -27,6 +27,7 @@ class Case(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price")
     s_description = models.CharField(max_length=150, verbose_name="Short Description")
     description = models.TextField(verbose_name="Full Description")
+    image = models.ImageField(upload_to='case_images/', blank=True, null=True, verbose_name="Image")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
