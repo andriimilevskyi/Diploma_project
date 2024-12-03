@@ -12,8 +12,8 @@ function App() {
       <div className="App">
         <Header />
         <Routes>
-          <Route path="/" exact component={MainContentRealisator} />
-          <Route path="/product/:id" component={ProductDetails} /> {/* Новий маршрут для інфо панелі */}
+          <Route path="/" element={<MainContentRealisator />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
         <Footer />
       </div>

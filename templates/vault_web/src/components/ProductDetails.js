@@ -1,29 +1,9 @@
-import React from "react";
+import React  from "react";
 import { useParams } from "react-router-dom"; // Для отримання параметра з URL
+import { products } from "./products";
 
 const ProductDetails = () => {
   const { id } = useParams(); // Отримуємо ID продукту з URL
-  const products = [
-    {
-      id: 1,
-      imgSrc: require("../images/fibre.jpg"),
-      title: "SAVIOR",
-      description: "MagSafe® Compatible Aramid Fibre Phone Case",
-      price: "€34,99",
-      tags: ["magsafe"],
-      color: "green",
-    },
-    {
-      id: 2,
-      imgSrc: require("../images/plastic.png"),
-      title: "CARRION",
-      description: "MagSafe® Compatible Clear Phone Case",
-      price: "€69,99",
-      tags: ["magsafe", "designs"],
-      color: "black",
-    },
-    // Інші продукти
-  ];
 
   // Знайдемо продукт за ID
   const product = products.find(product => product.id === parseInt(id));
