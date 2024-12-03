@@ -6,7 +6,7 @@ const ProductDetails = () => {
   const { id } = useParams(); // Отримуємо ID продукту з URL
 
   // Знайдемо продукт за ID
-  const product = products.find(product => product.id === parseInt(id));
+  const product = products.find(p => p.id.toString() === id);
 
   if (!product) {
     return <div>Product not found</div>;
