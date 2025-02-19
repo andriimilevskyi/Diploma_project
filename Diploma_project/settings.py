@@ -88,10 +88,10 @@ WSGI_APPLICATION = 'Diploma_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'vaultweb',
-        'USER': 'admin',
-        'PASSWORD': '1234admin1234',
-        'HOST': 'db-vaultweb.cp4g68g2y6gc.eu-north-1.rds.amazonaws.com',
+        'NAME': 'bicycle_configurator',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
