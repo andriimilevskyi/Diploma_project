@@ -96,6 +96,13 @@ class RotorDiameter(models.Model):
         return f"{self.diameter}mm"
 
 
+class RotorMountType(models.Model):
+    type = models.CharField(max_length=50, verbose_name="Rottor Mount Type")
+
+    def __str__(self):
+        return self.type
+
+
 class BrakeMountStandart(models.Model):
     name = models.CharField(max_length=15, verbose_name="Brake Mount standart name")
     rotor_size = models.ForeignKey(RotorDiameter, verbose_name="Rottor size in mm")
@@ -462,73 +469,19 @@ class DiskBrakeAdapter(models.Model):
         return f"{self.brand} {self.series} ({self.mount} to {self.caliper_mount})"
 
 
-class Wheelset(models.Model):
+class Rim(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     series = models.CharField(max_length=100, verbose_name="Series Name")
-    application = models.ForeignKey(Application, verbose_name="Application")
-    wheel_size = models.CharField()
+    wheel_size = models.ForeignKey(WheelSize, verbose_name="Wheel size")
+    spokes_num = models.IntegerField(max_length="2", verbose_name="Number of spokes")
     tyre_type = models.CharField()
-    spokes_num = models.CharField()
-    brake_type = models.CharField()
-    tubeless_ready = models.BooleanField()
-    front_wheel = models.BooleanField()
-    rear_wheel = models.BooleanField()
-    weight_limit = models.BooleanField()
-
-    # color = models.CharField(max_length=50, verbose_name="Color")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
-
+    # add rims brakes
     def __str__(self):
-        return f"{self.brand} {self.series} / {self.wheel_size}"
-
-
-class FrontWheel(models.Model):
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    series = models.CharField(max_length=100, verbose_name="Series Name")
-    application = models.ForeignKey(Application, verbose_name="Application")
-    wheel_size = models.CharField()
-    tyre_type = models.CharField()
-    spokes_num = models.CharField()
-    rim = models.CharField()
-    front_hub = models.CharField()
-    lacing = models.CharField()
-    brake_type = models.CharField()
-    tyre_width = models.BooleanField()
-    tubeless_ready = models.BooleanField()
-    features = models.TextField(verbose_name="Features", blank=True, null=True)
-    technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.brand} {self.series} / {self.wheel_size} (Spokes - {self.spokes_num})"
-
-
-class RearWheel(models.Model):
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    series = models.CharField(max_length=100, verbose_name="Series Name")
-    application = models.ForeignKey(Application, verbose_name="Application")
-    wheel_size = models.CharField()
-    tyre_type = models.CharField()
-    spokes_num = models.CharField()
-    rim = models.CharField()
-    rear_hub = models.CharField()
-    lacing = models.CharField()
-    brake_type = models.CharField()
-    tyre_width = models.BooleanField()
-    tubeless_ready = models.BooleanField()
-    features = models.TextField(verbose_name="Features", blank=True, null=True)
-    technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.brand} {self.series} / {self.wheel_size} (Spokes - {self.spokes_num})"
+        return f"{self.brand} {self.series} {self.wheel_size}/{self.spokes_num}"
 
 
 class FrontHub(models.Model):
@@ -537,11 +490,12 @@ class FrontHub(models.Model):
     application = models.ForeignKey(Application, verbose_name="Application")
     material = models.CharField()
     bearings = models.CharField()
-    spoke_holes = models.CharField()
-    brake_type = models.CharField()
-    axle_type = models.CharField()
-    flange_distance = models.CharField()
-    partial_bolt_circle_diameter = models.CharField()
+    spoke_holes = models.IntegerField(max_length=2, verbose_name="Number of spokes")
+    rotor_mount = models.ForeignKey(RotorMountType, verbose_name="Rotor mount type")
+    axle_type = models.ForeignKey(AxleType, verbose_name="Axle type")
+    flange_distance = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Flange distance")
+    partial_bolt_circle_diameter = models.DecimalField(max_digits=3, decimal_places=1,
+                                                       verbose_name="Partial bolt_circle_diameter")
     spoke_hole_diameter = models.CharField()
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
@@ -553,20 +507,21 @@ class FrontHub(models.Model):
         return f"{self.brand} {self.series} {self.axle_type}, Spokes - {self.spoke_holes}"
 
 
-class Rear_hub(models.Model):
+class RearHub(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     series = models.CharField(max_length=100, verbose_name="Series Name")
     application = models.ForeignKey(Application, verbose_name="Application")
     material = models.CharField()
     bearings = models.CharField()
-    spoke_holes = models.IntegerField()
-    brake_type = models.CharField()
+    spoke_holes = models.IntegerField(max_length=2, verbose_name="Number of spokes")
+    rotor_mount = models.ForeignKey(RotorMountType, verbose_name="Rotor mount type")
     freehub = models.CharField()
     freehub_body_type = models.CharField()
     gearing = models.CharField()
     axle_type = models.ForeignKey(AxleType, verbose_name="Axle type")
-    flange_distance = models.CharField()
-    partial_bolt_circle_diameter = models.CharField()
+    flange_distance = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Flange distance")
+    partial_bolt_circle_diameter = models.DecimalField(max_digits=3, decimal_places=1,
+                                                       verbose_name="Partial bolt_circle_diameter")
     spoke_hole_diameter = models.CharField()
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
@@ -576,6 +531,75 @@ class Rear_hub(models.Model):
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.freehub}/{self.axle_type}, Spokes - {self.spoke_holes}"
+
+
+class FrontWheel(models.Model):
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    series = models.CharField(max_length=100, verbose_name="Series Name")
+    application = models.ForeignKey(Application, verbose_name="Application")
+    wheel_size = models.ForeignKey(WheelSize, verbose_name="Wheel size")
+    tyre_type = models.CharField()
+    spokes_num = models.IntegerField(max_length="2", verbose_name="Number of spokes")
+    rim = models.ForeignKey(Rim, verbose_name="Rim")
+    front_hub = models.ForeignKey(FrontHub, verbose_name="Front hub")
+    lacing = models.CharField()
+    rotor_mount = models.ForeignKey(RotorMountType, verbose_name="Rotor mount type")
+    tyre_width = models.BooleanField()
+    tubeless_ready = models.BooleanField(verbose_name="Tubeless Ready")
+    features = models.TextField(verbose_name="Features", blank=True, null=True)
+    technology = models.TextField(verbose_name="Technology", blank=True, null=True)
+    color = models.CharField(max_length=50, verbose_name="Color")
+    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.brand} {self.series} / {self.wheel_size} (Spokes - {self.spokes_num}) TLR:{self.tubeless_ready}"
+
+
+class RearWheel(models.Model):
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    series = models.CharField(max_length=100, verbose_name="Series Name")
+    application = models.ForeignKey(Application, verbose_name="Application")
+    wheel_size = models.ForeignKey(WheelSize, verbose_name="Wheel size")
+    tyre_type = models.CharField()
+    spokes_num = models.IntegerField(max_length="2", verbose_name="Number of spokes")
+    rim = models.ForeignKey(Rim, verbose_name="Rim")
+    rear_hub = models.ForeignKey(RearHub, verbose_name="Rear hub")
+    lacing = models.CharField()
+    rotor_mount = models.ForeignKey(RotorMountType, verbose_name="Rotor mount type")
+    tyre_width = models.BooleanField()
+    tubeless_ready = models.BooleanField(verbose_name="Tubeless Ready")
+    features = models.TextField(verbose_name="Features", blank=True, null=True)
+    technology = models.TextField(verbose_name="Technology", blank=True, null=True)
+    color = models.CharField(max_length=50, verbose_name="Color")
+    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.brand} {self.series} / {self.wheel_size} (Spokes - {self.spokes_num}) TLR:{self.tubeless_ready}"
+
+
+class Wheelset(models.Model):
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    series = models.CharField(max_length=100, verbose_name="Series Name")
+    application = models.ForeignKey(Application, verbose_name="Application")
+    wheel_size = models.ForeignKey(WheelSize, verbose_name="Wheel size")
+    tyre_type = models.CharField()
+    spokes_num = models.IntegerField(max_length="2", verbose_name="Number of spokes")
+    rotor_mount = models.ForeignKey(RotorMountType, verbose_name="Rotor mount type")
+    tubeless_ready = models.BooleanField(verbose_name="Tubeless Ready")
+    front_wheel = models.ForeignKey(FrontWheel, verbose_name="Front wheel")
+    rear_wheel = models.ForeignKey(RearWheel, verbose_name="Rear wheel")
+    weight_limit = models.IntegerField(max_length=3, verbose_name="Weight limit")
+
+    # color = models.CharField(max_length=50, verbose_name="Color")
+    features = models.TextField(verbose_name="Features", blank=True, null=True)
+    technology = models.TextField(verbose_name="Technology", blank=True, null=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.brand} {self.series} / {self.wheel_size} TLR:{self.tubeless_ready}"
 
 # class Order(models.Model):
 #     first_name = models.CharField(max_length=50, verbose_name="First Name")
