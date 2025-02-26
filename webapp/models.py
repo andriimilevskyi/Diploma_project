@@ -104,10 +104,10 @@ class RotorDiameter(models.Model):
 
 
 class RotorMountType(models.Model):
-    type = models.CharField(max_length=50, verbose_name="Rotor Mount Type")
+    mount_type = models.CharField(max_length=50, verbose_name="Rotor Mount Type")
 
     def __str__(self):
-        return self.type
+        return self.mount_type
 
 
 class BrakeMountStandard(models.Model):
@@ -369,9 +369,9 @@ class FrontDirailleur(models.Model):
     gearing = models.IntegerField(max_length=2, verbose_name="Gears count (x-speed)")
     type = models.CharField(max_length=100, verbose_name="Type")
     application = models.ForeignKey(Application, on_delete=models.CASCADE, verbose_name="Application")
-    chainline = models.CharField()
+    chainline = models.DecimalField(max_digits=2, decimal_places=1, verbose_name="Chainline in mm")
     chainring_size_max = models.CharField(max_length=50, verbose_name="Max Chainring Size")
-    capacity = models.CharField()
+    capacity = models.IntegerField(max_length=2, verbose_name="Capacity (x-tooth)")
     material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Material")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
@@ -384,13 +384,20 @@ class FrontDirailleur(models.Model):
         return f"{self.brand} {self.series} {self.gearing}"
 
 
+class HandlebarMount(models.Model):
+    mount_standard = models.CharField(max_length=50, verbose_name="Handlebar mount type")
+
+    def __str__(self):
+        return self.mount_standard
+
+
 class Shifter(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
     series = models.CharField(max_length=100, verbose_name="Series Name")
     gearing = models.IntegerField(max_length=2, verbose_name="Gears count (x-speed)")
     type = models.CharField(max_length=100, verbose_name="Type")
     application = models.ForeignKey(Application, on_delete=models.CASCADE, verbose_name="Application")
-    mount = models.CharField()
+    mount = models.ForeignKey(HandlebarMount, on_delete=models.PROTECT, verbose_name="Mount type")
     material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Material")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
@@ -402,12 +409,19 @@ class Shifter(models.Model):
         return f"{self.brand} {self.series} {self.gearing}"
 
 
+class BrakePadsCompound(models.Model):
+    compound_type = models.CharField(max_length=15, verbose_name="Pads compound material")
+
+    def __str__(self):
+        return self.compound_type
+
+
 class BrakePads(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
     series = models.CharField(max_length=100, verbose_name="Series Name")
-    compound = models.CharField()
-    plate_material = models.CharField()
-    cooling_fins = models.CharField()
+    compound = models.ForeignKey(BrakePadsCompound, on_delete=models.PROTECT, verbose_name="Compound type")
+    plate_material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Plate material")
+    cooling_fins = models.BooleanField(verbose_name="Cooling fins")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
@@ -417,15 +431,22 @@ class BrakePads(models.Model):
         return f"{self.brand} {self.series} {self.compound}"
 
 
+class BrakeActuation(models.Model):
+    actuation_type = models.CharField(max_length=15, verbose_name="Brake actuation type")
+
+    def __str__(self):
+        return self.actuation_type
+
+
 class BrakeRotor(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
     series = models.CharField(max_length=100, verbose_name="Series Name")
-    mount = models.CharField()
+    mount = models.ForeignKey(RotorMountType, on_delete=models.PROTECT, verbose_name="Mount type")
     diameter = models.ForeignKey(RotorDiameter, on_delete=models.PROTECT, verbose_name="Rotor diameter")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    actuation = models.CharField(verbose_name="Brake pads material")
-    # brake_pads = models.ForeignKey(Brake_Pads, verbose_name="Brake pads")
+    actuation = models.ForeignKey(BrakeActuation, on_delete=models.PROTECT, verbose_name="Brake actuation type")
+    # brake_pads = models.ForeignKey(Brake_Pads, on_delete=models.PROTECT, verbose_name="Brake pads")
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
@@ -439,10 +460,10 @@ class BrakeLever(models.Model):
     series = models.CharField(max_length=100, verbose_name="Series Name")
     application = models.ForeignKey(Application, on_delete=models.CASCADE, verbose_name="Application")
     type = models.CharField(max_length=100, verbose_name="Type")
-    actuation = models.CharField()
-    mount = models.CharField()
+    actuation = models.ForeignKey(BrakeActuation, on_delete=models.PROTECT, verbose_name="Brake actuation type")
+    mount = models.ForeignKey(HandlebarMount, on_delete=models.PROTECT, verbose_name="Lever mount type")
     material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Material")
-    lever_length = models.CharField()
+    lever_length = models.CharField(max_length="15", verbose_name="Lever length (-finger)")
     lever_side = models.CharField(Name="Left or right")
     color = models.CharField(max_length=50, verbose_name="Color")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
@@ -459,8 +480,8 @@ class BrakeCaliper(models.Model):
     series = models.CharField(max_length=100, verbose_name="Series Name")
     application = models.ForeignKey(Application, on_delete=models.CASCADE, verbose_name="Application")
     type = models.CharField(max_length=100, verbose_name="Type")
-    actuation = models.CharField()
-    mount = models.CharField()
+    actuation = models.ForeignKey(BrakeActuation, on_delete=models.PROTECT, verbose_name="Brake actuation type")
+    mount = models.ForeignKey(BrakeMountStandard, on_delete=models.PROTECT, verbose_name="Caliper mount type")
     mounting_position = models.CharField()
     caliper_material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Caliper material")
     piston_material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Piston material")
@@ -482,7 +503,7 @@ class Brakes(models.Model):
     series = models.CharField(max_length=100, verbose_name="Series Name")
     application = models.ForeignKey(Application, on_delete=models.CASCADE, verbose_name="Application")
     type = models.CharField(max_length=100, verbose_name="Type")
-    actuation = models.CharField()
+    actuation = models.ForeignKey(BrakeActuation, on_delete=models.PROTECT, verbose_name="Brake actuation type")
     front_hose_length = models.IntegerField()
     caliper = models.ForeignKey(BrakeCaliper, on_delete=models.PROTECT, verbose_name="Brake caliper")
     lever = models.ForeignKey(BrakeLever, on_delete=models.PROTECT, verbose_name="Brake lever")
@@ -579,6 +600,13 @@ class RearHub(models.Model):
         return f"{self.brand} {self.series} {self.freehub}/{self.axle_type}, Spokes - {self.spoke_holes}"
 
 
+class WheelLacing(models.Model):
+    lacing_type = models.CharField(max_length=50, verbose_name="Wheel lacing type")
+
+    def __str__(self):
+        return self.lacing_type
+
+
 class FrontWheel(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
     series = models.CharField(max_length=100, verbose_name="Series Name")
@@ -588,7 +616,7 @@ class FrontWheel(models.Model):
     spokes_num = models.IntegerField(max_length="2", verbose_name="Number of spokes")
     rim = models.ForeignKey(Rim, on_delete=models.PROTECT, verbose_name="Rim")
     front_hub = models.ForeignKey(FrontHub, on_delete=models.PROTECT, verbose_name="Front hub")
-    lacing = models.CharField()
+    lacing = models.ForeignKey(WheelLacing, on_delete=models.PROTECT, verbose_name="Spokes lacing")
     rotor_mount = models.ForeignKey(RotorMountType, on_delete=models.PROTECT, verbose_name="Rotor mount type")
     tyre_width = models.BooleanField()
     tubeless_ready = models.BooleanField(verbose_name="Tubeless Ready")
