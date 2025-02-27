@@ -649,7 +649,7 @@ class RearWheel(models.Model):
     spokes_num = models.IntegerField(max_length="2", verbose_name="Number of spokes")
     rim = models.ForeignKey(Rim, on_delete=models.PROTECT, verbose_name="Rim")
     rear_hub = models.ForeignKey(RearHub, on_delete=models.PROTECT, verbose_name="Rear hub")
-    lacing = models.CharField()
+    lacing = models.ForeignKey(WheelLacing, on_delete=models.PROTECT, verbose_name="Spokes lacing")
     rotor_mount = models.ForeignKey(RotorMountType, on_delete=models.PROTECT, verbose_name="Rotor mount type")
     tyre_width = models.BooleanField()
     tubeless_ready = models.BooleanField(verbose_name="Tubeless Ready")
