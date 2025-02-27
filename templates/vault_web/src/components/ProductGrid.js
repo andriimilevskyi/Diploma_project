@@ -1,7 +1,6 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import './ProductGrid.css';
-// import {products} from "./products";
 import useProducts from './hook';
 
 

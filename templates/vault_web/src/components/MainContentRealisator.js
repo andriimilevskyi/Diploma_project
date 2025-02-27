@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import FilterMenu from "./FilterMenu";
 import ProductGrid from "./ProductGrid";
 import ProductCard from "./ProductCard";
-// import {products} from "./products";
 import useProducts from './hook';
 
 const MainContentRealisator = () => {

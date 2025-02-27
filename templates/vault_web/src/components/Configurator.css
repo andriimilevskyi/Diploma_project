@@ -1,0 +1,50 @@
+.bodycon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.configurator {
+
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.inputs-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 20px;
+    align-items: flex-end;
+}
+
+.input-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-block img {
+    width: 150px;
+    margin-bottom: 10px;
+}
+
+.input-block label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-block input {
+    width: 120px;
+    padding: 8px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.next-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+}

@@ -18,7 +18,8 @@
   font-size: 24px;
   font-weight: 700;
   display: flex;
-  width: auto;
+  height: 45px;
+  width: 45px;
   padding: 10px 0 0 20px;
 }
 
@@ -31,6 +32,12 @@
 .header-div .nav li {
   cursor: pointer;
   font-weight: 600;
+  outline: none;
+  transition: transform 0.2s ease-in-out;
+}
+
+.header-div .nav li:hover {
+    transform: scale(1.1);
 }
 
 .header-div .user-actions span {

@@ -1,7 +1,6 @@
 import React from "react";
 import {useParams} from "react-router-dom"; // Для отримання параметра з URL
 import './ProductDetails.css';
-// import {products} from "./products";
 import useProducts from './hook';
 
 const ProductDetails = () => {
