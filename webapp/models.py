@@ -416,6 +416,13 @@ class BrakePadsCompound(models.Model):
         return self.compound_type
 
 
+class BrakeHoseConnection(models.Model):
+    connection_type = models.CharField(max_length=15, verbose_name="Brake hose connection type")
+
+    def __str__(self):
+        return self.connection_type
+
+
 class BrakePads(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
     series = models.CharField(max_length=100, verbose_name="Series Name")
@@ -465,6 +472,8 @@ class BrakeLever(models.Model):
     material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Material")
     lever_length = models.CharField(max_length="15", verbose_name="Lever length (-finger)")
     lever_side = models.CharField(Name="Left or right")
+    hose_connection = models.ForeignKey(BrakeHoseConnection, on_delete=models.PROTECT,
+                                        verbose_name="Hose connection type")
     color = models.CharField(max_length=50, verbose_name="Color")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
@@ -482,12 +491,13 @@ class BrakeCaliper(models.Model):
     type = models.CharField(max_length=100, verbose_name="Type")
     actuation = models.ForeignKey(BrakeActuation, on_delete=models.PROTECT, verbose_name="Brake actuation type")
     mount = models.ForeignKey(BrakeMountStandard, on_delete=models.PROTECT, verbose_name="Caliper mount type")
-    mounting_position = models.CharField()
+    # mounting_position = models.CharField()
     caliper_material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Caliper material")
     piston_material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Piston material")
-    hose_connection = models.CharField()
+    hose_connection = models.ForeignKey(BrakeHoseConnection, on_delete=models.PROTECT,
+                                        verbose_name="Hose connection type")
     brake_pads = models.ForeignKey(BrakePads, on_delete=models.PROTECT, verbose_name="Brake pads")
-    rotor_compatibility = models.CharField()
+    # rotor_compatibility = models.CharField()
     color = models.CharField(max_length=50, verbose_name="Color")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
