@@ -592,7 +592,7 @@ class RearHub(models.Model):
     bearings = models.CharField()
     spoke_holes = models.IntegerField(max_length=2, verbose_name="Number of spokes")
     rotor_mount = models.ForeignKey(RotorMountType, on_delete=models.PROTECT, verbose_name="Rotor mount type")
-    freehub = models.CharField()
+    freehub = models.ForeignKey(FreehubStandard, on_delete=models.PROTECT, verbose_name="Freehub Standard")
     freehub_body_type = models.CharField()
     gearing = models.CharField()
     axle_type = models.ForeignKey(AxleType, on_delete=models.PROTECT, verbose_name="Axle type")
