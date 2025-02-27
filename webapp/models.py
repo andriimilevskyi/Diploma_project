@@ -154,7 +154,7 @@ class Frame(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
-    image = models.ImageField(upload_to='frames/', verbose_name="Frame Image", null=True, blank=True)
+    image = models.ImageField(upload_to='components/frames/', verbose_name="Frame Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand.name} {self.series} ({self.size}, {self.seatpost}) - {self.type}"
@@ -182,6 +182,7 @@ class Fork(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/forks/', verbose_name="Fork Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.wheel_size} {self.travel}mm/{self.suspension_type}"
@@ -203,6 +204,8 @@ class HandlebarMTB(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/handlebars/', verbose_name="HandlebarMTB Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.width}mm ({self.stem_clamp}mm"
@@ -224,6 +227,8 @@ class HandlebarRoad(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/handlebars/', verbose_name="HandlebarRoad Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.width}mm ({self.stem_clamp}mm"
@@ -246,6 +251,8 @@ class Stem(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/stems/', verbose_name="Stem Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.material} ({self.length}mm/{self.angle}°)"
@@ -276,6 +283,8 @@ class Crankset(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/cranks/', verbose_name="Cranks Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.gearing} {self.gradation} {self.chainring_mount}"
@@ -293,6 +302,8 @@ class BottomBracket(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/bottom_brackets/', verbose_name="BottomBracket Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.type}"
@@ -321,6 +332,8 @@ class Casette(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/cassettes/', verbose_name="Cassette Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.gearing} ({self.gradation}, {self.freehub_standard})"
@@ -340,6 +353,8 @@ class Chain(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/chains/', verbose_name="Chain Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.gearing}"
@@ -359,12 +374,14 @@ class Dirailleur(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/dirailleurs/', verbose_name="Dirailleur Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.gearing}"
 
 
-class FrontDirailleur(models.Model):
+class FrontDerailleur(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
     series = models.CharField(max_length=100, verbose_name="Series Name")
     gearing = models.IntegerField(verbose_name="Gears count (x-speed)")
@@ -380,6 +397,9 @@ class FrontDirailleur(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/front_derailleurs/', verbose_name="Front derailleur Image",
+                              null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.gearing}"
@@ -405,6 +425,7 @@ class Shifter(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/shifters/', verbose_name="Shifter Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.gearing}"
@@ -434,6 +455,8 @@ class BrakePads(models.Model):
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/brake_pads/', verbose_name="Brake pads Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.compound}"
@@ -458,6 +481,7 @@ class BrakeRotor(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/rotors/', verbose_name="Rotor Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.diameter} ({self.mount})"
@@ -480,6 +504,7 @@ class BrakeLever(models.Model):
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/levers/', verbose_name="Brake lever Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.type} {self.color}/{self.lever_side}"
@@ -506,6 +531,7 @@ class BrakeCaliper(models.Model):
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/calipers/', verbose_name="Brake caliper Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.type} {self.color}"
@@ -560,6 +586,7 @@ class Rim(models.Model):
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/rims/', verbose_name="Rim Image", null=True, blank=True)
 
     # add rims brakes
     def __str__(self):
@@ -584,6 +611,7 @@ class FrontHub(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/hubs/', verbose_name="Front hub Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.axle_type}, Spokes - {self.spoke_holes}"
@@ -610,6 +638,7 @@ class RearHub(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/hubs/', verbose_name="Rear hub Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.freehub}/{self.axle_type}, Spokes - {self.spoke_holes}"
@@ -640,6 +669,7 @@ class FrontWheel(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/wheels/', verbose_name="Front wheel Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} / {self.wheel_size} (Spokes - {self.spokes_num}) TLR:{self.tubeless_ready}"
@@ -663,6 +693,7 @@ class RearWheel(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    image = models.ImageField(upload_to='components/wheels/', verbose_name="Rear wheel Image", null=True, blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} / {self.wheel_size} (Spokes - {self.spokes_num}) TLR:{self.tubeless_ready}"
