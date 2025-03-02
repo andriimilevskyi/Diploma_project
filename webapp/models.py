@@ -409,6 +409,8 @@ class FrontDerailleur(models.Model):
 class HandlebarMount(models.Model):
     mount_standard = models.CharField(max_length=50, verbose_name="Handlebar mount type")
 
+    # Shifters etc.
+
     def __str__(self):
         return self.mount_standard
 
