@@ -111,18 +111,19 @@ class RotorMountType(models.Model):
 
 
 class BrakeMountStandard(models.Model):
-    name = models.CharField(max_length=15, verbose_name="Brake Mount standard name")
-    rotor_size = models.ForeignKey(RotorDiameter, verbose_name="Rotor size in mm", on_delete=models.PROTECT)
+    name = models.CharField(max_length=50, verbose_name="Brake Mount standard name")
+    rotor_size = models.ForeignKey(RotorDiameter, verbose_name="Rotor size in mm", on_delete=models.PROTECT, null=True,
+                                   blank=True)
 
     def __str__(self):
-        return f"{self.name} ({self.rotor_size}mm)"
+        return f"{self.name} ({self.rotor_size})" if self.rotor_size else f"{self.name}"
 
 
 class TubeDiameter(models.Model):
-    diameter = models.DecimalField(max_digits=3, decimal_places=1)
+    diameter = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Diameter of tube for Stem")
 
     def __str__(self):
-        return self.diameter
+        return f"{self.diameter}"
 
 
 class Frame(models.Model):
@@ -134,11 +135,11 @@ class Frame(models.Model):
     tyre_size = models.ForeignKey(TyreSize, on_delete=models.PROTECT, verbose_name="Max Tyre size")
     axle_type = models.ForeignKey(AxleType, on_delete=models.PROTECT, verbose_name="Axle type")
     size = models.CharField(max_length=50, verbose_name="Size")
-    seatpost = models.CharField(max_length=100, verbose_name="Seatpost")
-    min_rider_height = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Minimal Rider Height (cm)",
+    seatpost = models.IntegerField(verbose_name="Seatpost")
+    min_rider_height = models.DecimalField(max_digits=4, decimal_places=1, verbose_name="Minimal Rider Height (cm)",
                                            null=True,
                                            blank=True)
-    max_rider_height = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Maximal Rider Height (cm)",
+    max_rider_height = models.DecimalField(max_digits=4, decimal_places=1, verbose_name="Maximal Rider Height (cm)",
                                            null=True,
                                            blank=True)
     bb_standard = models.ForeignKey(BBStandard, on_delete=models.PROTECT, verbose_name="Bottom Bracket Standard")
@@ -152,7 +153,7 @@ class Frame(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/frames/', verbose_name="Frame Image", null=True, blank=True)
 
@@ -180,7 +181,7 @@ class Fork(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/forks/', verbose_name="Fork Image", null=True, blank=True)
 
@@ -202,7 +203,7 @@ class HandlebarMTB(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/handlebars/', verbose_name="HandlebarMTB Image", null=True,
                               blank=True)
@@ -225,7 +226,7 @@ class HandlebarRoad(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/handlebars/', verbose_name="HandlebarRoad Image", null=True,
                               blank=True)
@@ -249,7 +250,7 @@ class Stem(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/stems/', verbose_name="Stem Image", null=True,
                               blank=True)
@@ -281,7 +282,7 @@ class Crankset(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/cranks/', verbose_name="Cranks Image", null=True,
                               blank=True)
@@ -300,7 +301,7 @@ class BottomBracket(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/bottom_brackets/', verbose_name="BottomBracket Image", null=True,
                               blank=True)
@@ -316,7 +317,7 @@ class FreehubStandard(models.Model):
         return self.freehub_name
 
 
-class Casette(models.Model):
+class Cassette(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
     series = models.CharField(max_length=100, verbose_name="Series Name")
     application = models.ForeignKey(Application, on_delete=models.CASCADE, verbose_name="Application")
@@ -330,7 +331,7 @@ class Casette(models.Model):
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     freehub_standard = models.ForeignKey(FreehubStandard, on_delete=models.PROTECT, verbose_name="Freehub standard")
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/cassettes/', verbose_name="Cassette Image", null=True,
                               blank=True)
@@ -351,7 +352,7 @@ class Chain(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/chains/', verbose_name="Chain Image", null=True,
                               blank=True)
@@ -360,7 +361,7 @@ class Chain(models.Model):
         return f"{self.brand} {self.series} {self.gearing}"
 
 
-class Dirailleur(models.Model):
+class Derailleur(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
     series = models.CharField(max_length=100, verbose_name="Series Name")
     gearing = models.IntegerField(verbose_name="Gears count (x-speed)")
@@ -372,7 +373,7 @@ class Dirailleur(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/dirailleurs/', verbose_name="Dirailleur Image", null=True,
                               blank=True)
@@ -395,7 +396,7 @@ class FrontDerailleur(models.Model):
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     mount = models.ForeignKey(FrontDerailleurMount, on_delete=models.PROTECT, verbose_name="Front Derailleur Mount")
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/front_derailleurs/', verbose_name="Front derailleur Image",
                               null=True,
@@ -423,7 +424,7 @@ class Shifter(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/shifters/', verbose_name="Shifter Image", null=True, blank=True)
 
@@ -453,7 +454,7 @@ class BrakePads(models.Model):
     cooling_fins = models.BooleanField(verbose_name="Cooling fins")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/brake_pads/', verbose_name="Brake pads Image", null=True,
                               blank=True)
@@ -479,7 +480,7 @@ class BrakeRotor(models.Model):
     actuation = models.ForeignKey(BrakeActuation, on_delete=models.PROTECT, verbose_name="Brake actuation type")
     # brake_pads = models.ForeignKey(Brake_Pads, on_delete=models.PROTECT, verbose_name="Brake pads")
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/rotors/', verbose_name="Rotor Image", null=True, blank=True)
 
@@ -502,7 +503,7 @@ class BrakeLever(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/levers/', verbose_name="Brake lever Image", null=True, blank=True)
 
@@ -529,9 +530,10 @@ class BrakeCaliper(models.Model):
     color = models.CharField(max_length=50, verbose_name="Color")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
-    image = models.ImageField(upload_to='components/calipers/', verbose_name="Brake caliper Image", null=True, blank=True)
+    image = models.ImageField(upload_to='components/calipers/', verbose_name="Brake caliper Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.type} {self.color}"
@@ -550,7 +552,7 @@ class Brakes(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
 
     def __str__(self):
@@ -568,7 +570,7 @@ class DiskBrakeAdapter(models.Model):
     caliper_mount = models.ForeignKey(BrakeMountStandard, related_name='diskbrakeadapter_caliper_mounts',
                                       on_delete=models.PROTECT, verbose_name="Caliper mount type")
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
 
     def __str__(self):
@@ -584,7 +586,7 @@ class Rim(models.Model):
     material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Material")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/rims/', verbose_name="Rim Image", null=True, blank=True)
 
@@ -609,7 +611,7 @@ class FrontHub(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/hubs/', verbose_name="Front hub Image", null=True, blank=True)
 
@@ -636,7 +638,7 @@ class RearHub(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/hubs/', verbose_name="Rear hub Image", null=True, blank=True)
 
@@ -667,7 +669,7 @@ class FrontWheel(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/wheels/', verbose_name="Front wheel Image", null=True, blank=True)
 
@@ -691,7 +693,7 @@ class RearWheel(models.Model):
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
     color = models.CharField(max_length=50, verbose_name="Color")
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     image = models.ImageField(upload_to='components/wheels/', verbose_name="Rear wheel Image", null=True, blank=True)
 
@@ -715,7 +717,7 @@ class WheelSet(models.Model):
     # color = models.CharField(max_length=50, verbose_name="Color")
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Weight (kg)", null=True, blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
 
     def __str__(self):
