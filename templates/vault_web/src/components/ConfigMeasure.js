@@ -1,9 +1,10 @@
 import { useState } from "react";
-import './Configurator.css';
+import './ConfigMeasure.css';
+import { Link } from "react-router-dom";
 import heightimg from "../assets/images/Height.png";
 import inseamimg from "../assets/images/Inseam.png";
 
-const Configurator = () => {
+const ConfigMeasure = () => {
     const [height, setHeight] = useState("");
     const [innerHeight, setInnerHeight] = useState("");
 
@@ -14,7 +15,7 @@ const Configurator = () => {
 
     return (
     <div className="bodycon">
-        <div className="configurator">
+        <div className="configmeasure">
             <h2>What is your height?</h2>
 
             <div className="inputs-container">
@@ -43,10 +44,10 @@ const Configurator = () => {
                 </div>
             </div>
 
-            <button className="next-btn" onClick={handleSubmit}>Next →</button>
+            <button className="next-btn" onClick={handleSubmit}><Link to="/configdescipline" className="next-link">Next →</Link></button>
         </div>
         </div>
     );
 };
 
-export default Configurator;
+export default ConfigMeasure;

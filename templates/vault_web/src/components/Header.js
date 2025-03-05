@@ -10,16 +10,9 @@ function Header() {
         <div className="logo"><img src={logo} alt="Logo" /></div>
         <nav className="nav">
             <ul>
-                <li><Link to="/configurator">Configurator</Link></li>
+                <li><Link to="/configmeasure" className="next-link">Configurator</Link></li>
             </ul>
         </nav>
-        <div className="user-actions">
-          <span>🌐</span>
-          <span>€</span>
-          <span>❤️</span>
-          <span>👤</span>
-          <span>🛒</span>
-        </div>
       </div>
     </header>
   );

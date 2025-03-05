@@ -23,6 +23,18 @@
   padding: 10px 0 0 20px;
 }
 
+.header-div .nav {
+    margin-left: 15px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.nav li .next-link {
+    color: black;
+    text-decoration: none;
+    font-size: 20px;
+}
+
 .header-div .nav ul {
   list-style: none;
   display: flex;
@@ -38,13 +50,4 @@
 
 .header-div .nav li:hover {
     transform: scale(1.1);
-}
-
-.header-div .user-actions span {
-  margin-left: 15px;
-  cursor: pointer;
-  font-weight: 600;
-}
-.header-div .user-actions {
-  margin: 14px 0 14px 0;
 }
