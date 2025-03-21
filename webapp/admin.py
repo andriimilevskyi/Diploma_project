@@ -5,7 +5,7 @@ from .models import Frame, Fork, Derailleur, FrontDerailleur, Cassette, Chain, C
     BBStandard, FrontDerailleurMount, BrakeMountStandard, Material, RotorMountType, RotorDiameter, TubeDiameter, \
     HandlebarFlat, HandlebarDrop, HandlebarMount, Stem, ChainringMountStandard, FreehubStandard, BrakePadsCompound, \
     BrakeHoseConnection, BrakeActuation, Brakes, DiskBrakeAdapter, Rim, FrontHub, RearHub, WheelLacing, FrontWheel, \
-    RearWheel
+    RearWheel, RearShock, RearShockMount
 
 
 class HiddenModelAdmin(admin.ModelAdmin):
@@ -93,6 +93,16 @@ class FrameAdmin(admin.ModelAdmin):
 @admin.register(Fork)
 class ForkAdmin(admin.ModelAdmin):
     list_display = ("brand", "series", "image")
+
+
+@admin.register(RearShockMount)
+class RearShockMountAdmin(HiddenModelAdmin):
+    list_display = ("mount_type",)
+
+
+@admin.register(RearShock)
+class RearShockAdmin(admin.ModelAdmin):
+    list_display = ("brand", "series", "mount", "size", "stroke")
 
 
 @admin.register(Derailleur)
