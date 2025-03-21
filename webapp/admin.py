@@ -3,9 +3,15 @@ from django.contrib import admin
 from .models import Frame, Fork, Derailleur, FrontDerailleur, Cassette, Chain, Crankset, BottomBracket, Shifter, \
     BrakeLever, BrakeCaliper, BrakeRotor, WheelSet, BrakePads, Brand, Application, WheelSize, TyreSize, AxleType, \
     BBStandard, FrontDerailleurMount, BrakeMountStandard, Material, RotorMountType, RotorDiameter, TubeDiameter, \
-    HandlebarMTB, HandlebarRoad, HandlebarMount, Stem, ChainringMountStandard, FreehubStandard, BrakePadsCompound, \
+    HandlebarFlat, HandlebarDrop, HandlebarMount, Stem, ChainringMountStandard, FreehubStandard, BrakePadsCompound, \
     BrakeHoseConnection, BrakeActuation, Brakes, DiskBrakeAdapter, Rim, FrontHub, RearHub, WheelLacing, FrontWheel, \
     RearWheel
+
+
+class HiddenModelAdmin(admin.ModelAdmin):
+    def get_model_perms(self, request):
+        # hides models from home
+        return {}
 
 
 # Register your models here.
@@ -20,62 +26,62 @@ from .models import Frame, Fork, Derailleur, FrontDerailleur, Cassette, Chain, C
 # admin.site.register(OrderItem)
 # , iPhoneCaseAdmin)
 @admin.register(Brand)
-class BrandAdmin(admin.ModelAdmin):
+class BrandAdmin(HiddenModelAdmin):
     list_display = ("name",)
 
 
 @admin.register(Application)
-class ApplicationAdmin(admin.ModelAdmin):
+class ApplicationAdmin(HiddenModelAdmin):
     list_display = ("name",)
 
 
 @admin.register(WheelSize)
-class WheelSizeAdmin(admin.ModelAdmin):
+class WheelSizeAdmin(HiddenModelAdmin):
     list_display = ("size",)
 
 
 @admin.register(TyreSize)
-class TyreSizeAdmin(admin.ModelAdmin):
+class TyreSizeAdmin(HiddenModelAdmin):
     list_display = ("size",)
 
 
 @admin.register(AxleType)
-class AxleTypeAdmin(admin.ModelAdmin):
+class AxleTypeAdmin(HiddenModelAdmin):
     list_display = ("type", "diameter", "length", "side")
 
 
 @admin.register(BBStandard)
-class BBStandardAdmin(admin.ModelAdmin):
+class BBStandardAdmin(HiddenModelAdmin):
     list_display = ("name", "type")
 
 
 @admin.register(FrontDerailleurMount)
-class FrontDerailleurMountAdmin(admin.ModelAdmin):
+class FrontDerailleurMountAdmin(HiddenModelAdmin):
     list_display = ("name", "type")
 
 
 @admin.register(RotorMountType)
-class RotorMountTypeAdmin(admin.ModelAdmin):
+class RotorMountTypeAdmin(HiddenModelAdmin):
     list_display = ("mount_type",)
 
 
 @admin.register(RotorDiameter)
-class RotorDiameterAdmin(admin.ModelAdmin):
+class RotorDiameterAdmin(HiddenModelAdmin):
     list_display = ("diameter",)
 
 
 @admin.register(BrakeMountStandard)
-class BrakeMountStandardAdmin(admin.ModelAdmin):
+class BrakeMountStandardAdmin(HiddenModelAdmin):
     list_display = ("name", "rotor_size")
 
 
 @admin.register(TubeDiameter)
-class TubeDiameterAdmin(admin.ModelAdmin):
+class TubeDiameterAdmin(HiddenModelAdmin):
     list_display = ("diameter",)
 
 
 @admin.register(Material)
-class MaterialAdmin(admin.ModelAdmin):
+class MaterialAdmin(HiddenModelAdmin):
     list_display = ("material_name",)
 
 
@@ -139,22 +145,17 @@ class BrakeRotorAdmin(admin.ModelAdmin):
     list_display = ("brand", "series", "image")
 
 
-@admin.register(WheelSet)
-class WheelSetAdmin(admin.ModelAdmin):
-    list_display = ("brand", "series",)
-
-
 @admin.register(BrakePads)
 class BrakePadsAdmin(admin.ModelAdmin):
     list_display = ("brand", "series", "image")
 
 
-@admin.register(HandlebarMTB)
+@admin.register(HandlebarFlat)
 class HandlebarMTBAdmin(admin.ModelAdmin):
     list_display = ("brand", "series", "image")
 
 
-@admin.register(HandlebarRoad)
+@admin.register(HandlebarDrop)
 class HandlebarRoadAdmin(admin.ModelAdmin):
     list_display = ("brand", "series", "image")
 
@@ -170,27 +171,27 @@ class StemAdmin(admin.ModelAdmin):
 
 
 @admin.register(ChainringMountStandard)
-class ChainringMountStandardAdmin(admin.ModelAdmin):
+class ChainringMountStandardAdmin(HiddenModelAdmin):
     list_display = ("type",)
 
 
 @admin.register(FreehubStandard)
-class FreehubStandardAdmin(admin.ModelAdmin):
+class FreehubStandardAdmin(HiddenModelAdmin):
     list_display = ("freehub_name",)
 
 
 @admin.register(BrakePadsCompound)
-class BrakePadsCompoundAdmin(admin.ModelAdmin):
+class BrakePadsCompoundAdmin(HiddenModelAdmin):
     list_display = ("compound_type",)
 
 
 @admin.register(BrakeHoseConnection)
-class BrakeHoseConnectionAdmin(admin.ModelAdmin):
+class BrakeHoseConnectionAdmin(HiddenModelAdmin):
     list_display = ("connection_type",)
 
 
 @admin.register(BrakeActuation)
-class BrakeActuationAdmin(admin.ModelAdmin):
+class BrakeActuationAdmin(HiddenModelAdmin):
     list_display = ("actuation_type",)
 
 
@@ -220,7 +221,7 @@ class RearHubAdmin(admin.ModelAdmin):
 
 
 @admin.register(WheelLacing)
-class WheelLacingAdmin(admin.ModelAdmin):
+class WheelLacingAdmin(HiddenModelAdmin):
     list_display = ("lacing_type",)
 
 
@@ -232,6 +233,11 @@ class FrontWheelAdmin(admin.ModelAdmin):
 @admin.register(RearWheel)
 class RearWheelAdmin(admin.ModelAdmin):
     list_display = ("brand", "series", "application", "wheel_size", "tubeless_ready", "spokes_num")
+
+
+@admin.register(WheelSet)
+class WheelSetAdmin(admin.ModelAdmin):
+    list_display = ("brand", "series",)
 
 # @admin.register(Case)
 # class CaseAdmin(admin.ModelAdmin):
