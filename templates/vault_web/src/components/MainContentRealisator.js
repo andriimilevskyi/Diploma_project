@@ -1,97 +1,125 @@
 import React, {useState} from "react";
 import FilterMenu from "./FilterMenu";
 import ProductGrid from "./ProductGrid";
-import ProductCard from "./ProductCard";
-import useProducts from './hook';
+
 
 const MainContentRealisator = () => {
-    const [filters, setFilters] = useState({
-        magsafe: false,
-        thin: false,
-        designs: false,
-        colors: {
-            black: false,
-            blue: false,
-            light: false,
-            green: false,
-        },
-        priceRange: {
-            min: 0,
-            max: 100,
-        },
-    });
+  const [filters, setFilters] = useState({
+    magsafe: false,
+    thin: false,
+    designs: false,
+    colors: {
+      black: false,
+      blue: false,
+      light: false,
+      green: false,
+    },
+    priceRange: {
+      min: 0,
+      max: 100,
+    },
+  });
 
-    const [appliedFilters, setAppliedFilters] = useState(null);
+  const [appliedFilters, setAppliedFilters] = useState(null);
 
-    const {products, loading, error} = useProducts();
+  const products = [
+    {
+      imgSrc: require("../assets/images/test.jpg"),
+      title: "SAVIOR",
+      description: "MagSafe® Compatible Aramid Fibre Phone Case",
+      price: "€34,99",
+      tags: ["magsafe"],
+      color: "green",
+    },
+    {
+      imgSrc: require("../assets/images/test.jpg"),
+      title: "CARRION",
+      description: "MagSafe® Compatible Clear Phone Case",
+      price: "€69,99",
+      tags: ["magsafe", "designs"],
+      color: "black",
+    },
+    {
+      imgSrc: require("../assets/images/test.jpg"),
+      title: "INLOCK",
+      description: "Thin Protective Phone Case",
+      price: "€59,99",
+      tags: ["thin"],
+      color: "blue",
+    },
+    {
+      imgSrc: require("../assets/images/test.jpg"),
+      title: "BRINGIN",
+      description: "MagSafe® Compatible Carbon Fibre Case",
+      price: "€59,99",
+      tags: ["magsafe"],
+      color: "black",
+    },
+    {
+      imgSrc: require("../assets/images/test.jpg"),
+      title: "DEFENSE",
+      description: "Heavy Duty Defense Case",
+      price: "€79,99",
+      tags: ["thin"],
+      color: "light",
+    },
+    {
+      imgSrc: require("../assets/images/test.jpg"),
+      title: "HOLDEN",
+      description: "Shockproof Alpha Case",
+      price: "€49,99",
+      tags: ["designs"],
+      color: "light",
+    },
+  ];
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
+  // Функція для перетворення ціни з рядка на число
+  const parsePrice = (priceStr) => {
+    return parseFloat(priceStr.replace("€", "").replace(",", "."));
+  };
 
-    // Функція для перетворення ціни з рядка на число
-    const parsePrice = (priceStr) => {
-        return parseFloat(priceStr.replace("€", "").replace(",", "."));
-    };
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
 
-    const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
-    };
-
-
-    const handleApplyFilters = () => {
-        if (Object.values(filters).every((val) => !val) && // перевірка на вимкнені фільтри
-            !Object.values(filters.colors).some(Boolean) && // перевірка на вимкнені кольори
-            filters.priceRange.min === 0 && filters.priceRange.max === 100) {
-            setAppliedFilters(null); // Якщо фільтри вимкнені, показуємо всі продукти
-        } else {
-            setAppliedFilters(filters); // Якщо є активні фільтри, застосовуємо їх
-        }
-    };
-    // const handleApplyFilters = () => {
-    //     const {colors, priceRange, ...otherFilters} = filters;
-    //
-    //     const areFiltersActive =
-    //         Object.values(otherFilters).some(Boolean) ||
-    //         Object.values(colors).some(Boolean) ||
-    //         priceRange.min > 0 ||
-    //         priceRange.max < 100;
-    //
-    //     setAppliedFilters(areFiltersActive ? filters : null);
-    // };
+  const handleApplyFilters = () => {
+    if (Object.values(filters).every((val) => !val) && // перевірка на вимкнені фільтри
+        !Object.values(filters.colors).some(Boolean) && // перевірка на вимкнені кольори
+        filters.priceRange.min === 0 && filters.priceRange.max === 100) {
+      setAppliedFilters(null); // Якщо фільтри вимкнені, показуємо всі продукти
+    } else {
+      setAppliedFilters(filters); // Якщо є активні фільтри, застосовуємо їх
+    }
+  };
 
 
-    // Якщо фільтри не застосовані, показуємо всі продукти
-    const filteredProducts = appliedFilters
-        ? products.filter((product) => {
-            const {magsafe, thin, designs, colors, priceRange} = appliedFilters;
-            const passesFeaturesFilter =
-                (!magsafe || product.tags.includes('magsafe')) &&
-                (!thin || product.tags.includes('thin')) &&
-                (!designs || product.tags.includes('designs'));
-            const passesColorFilter =
-                !Object.values(colors).some(Boolean) || colors[product.color];
-            // Перевірка фільтру за ціною після перетворення на число
-            const passesPriceFilter =
-                parsePrice(product.price) >= priceRange.min && parsePrice(product.price) <= priceRange.max;
-            return passesFeaturesFilter && passesColorFilter && passesPriceFilter;
-        })
-        : products;
+  // Якщо фільтри не застосовані, показуємо всі продукти
+  const filteredProducts = appliedFilters
+    ? products.filter((product) => {
+        const { magsafe, thin, designs, colors, priceRange } = appliedFilters;
+
+        const passesFeaturesFilter =
+          (!magsafe || product.tags.includes('magsafe')) &&
+          (!thin || product.tags.includes('thin')) &&
+          (!designs || product.tags.includes('designs'));
+
+        const passesColorFilter =
+          !Object.values(colors).some(Boolean) || colors[product.color];
+
+        // Перевірка фільтру за ціною після перетворення на число
+        const passesPriceFilter =
+          parsePrice(product.price) >= priceRange.min && parsePrice(product.price) <= priceRange.max;
+
+        return passesFeaturesFilter && passesColorFilter && passesPriceFilter;
+      })
+    : products;
 
     return (
-        <div className="main-content">
-            <FilterMenu filters={filters} onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters}/>
-            <ProductGrid products={filteredProducts} renderItem={(product) => (
-                <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    image={product.image}
-                    title={product.title}
-                    description={product.description}
-                    price={product.price}
-                />
-            )}/>
-        </div>
-    );
+    <div className="main-content">
+      <FilterMenu filters={filters} onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
+      <ProductGrid products={filteredProducts} />
+    </div>
+  );
 };
 
 export default MainContentRealisator;
