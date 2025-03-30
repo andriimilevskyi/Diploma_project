@@ -8,7 +8,6 @@ function ProductCard({ imgSrc, title, description, price }) {
       <h3>{title}</h3>
       <p>{description}</p>
       <p>{price}</p>
-      <button>Buy</button>
     </div>
   );
 }

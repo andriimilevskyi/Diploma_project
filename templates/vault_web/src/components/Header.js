@@ -7,7 +7,7 @@ function Header() {
   return (
     <header className="header">
       <div className="header-div">
-        <div className="logo"><img src={logo} alt="Logo" /></div>
+        <Link to="/"><div className="logo"><img src={logo} alt="Logo" /></div></Link>
         <nav className="nav">
             <ul>
                 <li><Link to="/configmeasure" className="next-link">Configurator</Link></li>

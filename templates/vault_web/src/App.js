@@ -12,8 +12,8 @@ function App() {
     <Router>
       <div className="App">
         <Header />
-          <MainContentRealisator />
         <Routes>
+          <Route path="/" element={<MainContentRealisator />} />
           <Route path="/configmeasure" element={<ConfigMeasure />} />
           <Route path="/configdescipline" element={<ConfigDescipline />} />
         </Routes>

@@ -5,8 +5,8 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-content">
-        <div className="logo">Vault</div>
-        <p>Copyright © 2024</p>
+        <div className="logo">DMR</div>
+        <p>Copyright © 2025</p>
       </div>
     </footer>
   );
