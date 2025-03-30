@@ -275,9 +275,9 @@ class Crankset(BikeComponent):
                                         verbose_name="Chainring Mount Standard")
     gradation = models.CharField(max_length=15, verbose_name="Chainrings gradation (smallest-biggest)T")
     gearing = models.IntegerField(verbose_name="Gears count (x-speed)")
-    crank_arm_length = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Crank Arm length")
+    crank_arm_length = models.DecimalField(max_digits=5, decimal_places=1, verbose_name="Crank Arm length")
     axle_diameter = models.IntegerField(verbose_name="Axle diameter in mm")
-    chainline = models.DecimalField(max_digits=2, decimal_places=1, verbose_name="Chainline in mm", null=True)
+    chainline = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Chainline in mm", null=True)
     bb_standard = models.ForeignKey("BBStandard", on_delete=models.PROTECT, verbose_name="Bottom Bracket standard")
     image = models.ImageField(upload_to='components/cranksets/', verbose_name="Crankset Image", null=True, blank=True)
 

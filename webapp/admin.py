@@ -5,7 +5,7 @@ from .models import Frame, Fork, Derailleur, FrontDerailleur, Cassette, Chain, C
     BBStandard, FrontDerailleurMount, BrakeMountStandard, Material, RotorMountType, RotorDiameter, TubeDiameter, \
     HandlebarFlat, HandlebarDrop, HandlebarMount, Stem, ChainringMountStandard, FreehubStandard, BrakePadsCompound, \
     BrakeHoseConnection, BrakeActuation, Brakes, DiskBrakeAdapter, Rim, FrontHub, RearHub, WheelLacing, FrontWheel, \
-    RearWheel, RearShock, RearShockMount
+    RearWheel, RearShock, RearShockMount, Drivetrain, RoadBike, MTBBike
 
 
 class HiddenModelAdmin(admin.ModelAdmin):
@@ -248,6 +248,20 @@ class RearWheelAdmin(admin.ModelAdmin):
 @admin.register(WheelSet)
 class WheelSetAdmin(admin.ModelAdmin):
     list_display = ("brand", "series",)
+
+@admin.register(Drivetrain)
+class DrivetrainAdmin(admin.ModelAdmin):
+    list_display = ("brand", "series",)
+
+@admin.register(RoadBike)
+class RoadBikeAdmin(admin.ModelAdmin):
+    list_display = ("brand", "series",)
+
+
+@admin.register(MTBBike)
+class MTBBikeAdmin(admin.ModelAdmin):
+    list_display = ("brand", "series", "frame", "fork", "wheelset", "drivetrain", "brake", "handlebar")
+    list_select_related = ("brand", "frame", "fork", "wheelset", "drivetrain", "brake", "handlebar")
 
 # @admin.register(Case)
 # class CaseAdmin(admin.ModelAdmin):
