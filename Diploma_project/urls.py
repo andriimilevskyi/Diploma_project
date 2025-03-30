@@ -25,12 +25,12 @@ from django.conf.urls.static import static
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Case and Order API",
+        title="Configurator API",
         default_version="v1",
         description=(
-            "This API allows you to manage phone cases, orders, "
-            "and order items. Use these endpoints to create, retrieve, "
-            "update, and delete resources."
+            "This API allows you to configurate custom bycycle, get "
+            "and add bycycle components. Use these endpoints to create, retrieve, "
+            "update, and delete components. Also configurate custom bicycle"
         ),
         terms_of_service="https://www.example.com/terms/",
         contact=openapi.Contact(email="support@example.com"),
