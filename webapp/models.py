@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 # https://acode.com.ua/inheritance-python/
@@ -408,7 +410,7 @@ class BrakePads(BikeComponent):
                                        related_name='brakepads_plate_material')
     cooling_fins = models.BooleanField(verbose_name="Cooling fins")
     image = models.ImageField(upload_to='components/brake_pads/', verbose_name="Brake pads Image", null=True,
-    blank = True)
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} {self.compound}"
@@ -615,7 +617,7 @@ class Bicycle(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
     features = models.TextField(verbose_name="Features", blank=True, null=True)
     technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    image = models.ImageField(upload_to='bicycles/', verbose_name="Bicycle Image", null=True, blank=True)
+    preview_image = models.ImageField(upload_to='bicycles/', verbose_name="Bicycle Image", null=True, blank=True)
 
     class Meta:
         abstract = True  # Робимо клас абстрактним, щоб не створювалася таблиця
@@ -635,6 +637,17 @@ class RoadBike(Bicycle):
 
 class GravelBike(Bicycle):
     handlebar = models.ForeignKey(HandlebarDrop, on_delete=models.PROTECT, verbose_name="Drop Bar")
+
+
+class BicycleDetailedImage(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    bicycle = GenericForeignKey('content_type', 'object_id')
+
+    image = models.ImageField(upload_to='bicycles/detailed/', verbose_name="Detailed Bicycle Image")
+
+    def __str__(self):
+        return f"Detailed image for {self.bicycle}"
 # class Order(models.Model):
 #     first_name = models.CharField(max_length=50, verbose_name="First Name")
 #     last_name = models.CharField(max_length=50, verbose_name="Last Name")

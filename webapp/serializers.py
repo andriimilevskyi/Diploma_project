@@ -1,6 +1,21 @@
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 # from .models import Case, Order, OrderItem
-from .models import MTBBike, RoadBike
+from .models import MTBBike, RoadBike, BicycleDetailedImage
+
+
+class BicycleDetailedImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BicycleDetailedImage
+        fields = ["id", "image_url"]
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get("request")
+            return request.build_absolute_uri(obj.image.url) if request else obj.image.url
+        return None
 
 
 class MTBBikeSerializer(serializers.ModelSerializer):
@@ -11,10 +26,19 @@ class MTBBikeSerializer(serializers.ModelSerializer):
     drivetrain = serializers.StringRelatedField()
     brake = serializers.StringRelatedField()
     handlebar = serializers.StringRelatedField()
+    detailed_images = serializers.SerializerMethodField()
 
     class Meta:
         model = MTBBike
         fields = "__all__"
+
+    def get_detailed_images(self, obj):
+        """ Manually fetch all related images """
+        images = BicycleDetailedImage.objects.filter(
+            content_type=ContentType.objects.get_for_model(obj),
+            object_id=obj.id
+        )
+        return BicycleDetailedImageSerializer(images, many=True, context=self.context).data
 
 
 class RoadBikeSerializer(serializers.ModelSerializer):
@@ -25,10 +49,19 @@ class RoadBikeSerializer(serializers.ModelSerializer):
     drivetrain = serializers.StringRelatedField()
     brake = serializers.StringRelatedField()
     handlebar = serializers.StringRelatedField()
+    detailed_images = serializers.SerializerMethodField()
 
     class Meta:
         model = RoadBike
         fields = "__all__"
+
+    def get_detailed_images(self, obj):
+        """ Manually fetch all related images """
+        images = BicycleDetailedImage.objects.filter(
+            content_type=ContentType.objects.get_for_model(obj),
+            object_id=obj.id
+        )
+        return BicycleDetailedImageSerializer(images, many=True, context=self.context).data
 
 # class OrderItemSerializer(serializers.ModelSerializer):
 #     case = serializers.PrimaryKeyRelatedField(queryset=Case.objects.all())  # Only the ID of the related case

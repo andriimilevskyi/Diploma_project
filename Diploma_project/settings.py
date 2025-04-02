@@ -85,6 +85,19 @@ WSGI_APPLICATION = 'Diploma_project.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'bicycle_configurator_v2',
+#         'USER': 'django_user',
+#         'PASSWORD': '1234admin1234',
+#         'HOST': '176.36.133.121',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
