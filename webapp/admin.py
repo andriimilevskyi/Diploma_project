@@ -1,11 +1,13 @@
 from django.contrib import admin
+from django.utils.html import mark_safe
+from django.contrib.contenttypes.admin import GenericTabularInline
 # from .models import Case, Order, OrderItem
 from .models import Frame, Fork, Derailleur, FrontDerailleur, Cassette, Chain, Crankset, BottomBracket, Shifter, \
     BrakeLever, BrakeCaliper, BrakeRotor, WheelSet, BrakePads, Brand, Application, WheelSize, TyreSize, AxleType, \
     BBStandard, FrontDerailleurMount, BrakeMountStandard, Material, RotorMountType, RotorDiameter, TubeDiameter, \
     HandlebarFlat, HandlebarDrop, HandlebarMount, Stem, ChainringMountStandard, FreehubStandard, BrakePadsCompound, \
     BrakeHoseConnection, BrakeActuation, Brakes, DiskBrakeAdapter, Rim, FrontHub, RearHub, WheelLacing, FrontWheel, \
-    RearWheel, RearShock, RearShockMount, Drivetrain, RoadBike, MTBBike
+    RearWheel, RearShock, RearShockMount, Drivetrain, RoadBike, MTBBike, BicycleDetailedImage
 
 
 class HiddenModelAdmin(admin.ModelAdmin):
@@ -33,6 +35,21 @@ class BrandAdmin(HiddenModelAdmin):
 @admin.register(Application)
 class ApplicationAdmin(HiddenModelAdmin):
     list_display = ("name",)
+
+
+class BicycleDetailedImageInline(GenericTabularInline):
+    model = BicycleDetailedImage
+    extra = 1  # Количество пустых полей для добавления новых изображений
+
+    readonly_fields = ["preview"]
+
+    def preview(self, obj):
+        if obj.image:
+            return mark_safe(
+                f'<img src="{obj.image.url}" width="48%" height="30%" style="object-fit: cover; border-radius: 5px;"/>')
+        return "No Image"
+
+    preview.short_description = "Image Preview"
 
 
 @admin.register(WheelSize)
@@ -249,19 +266,46 @@ class RearWheelAdmin(admin.ModelAdmin):
 class WheelSetAdmin(admin.ModelAdmin):
     list_display = ("brand", "series",)
 
+
 @admin.register(Drivetrain)
 class DrivetrainAdmin(admin.ModelAdmin):
     list_display = ("brand", "series",)
 
+
 @admin.register(RoadBike)
 class RoadBikeAdmin(admin.ModelAdmin):
-    list_display = ("brand", "series",)
+    list_display = ("brand", "series", "preview_image")
+    inlines = [BicycleDetailedImageInline]
+
+
+readonly_fields = ["preview_image_admin"]
+
+
+def preview_image_admin(self, obj):
+    if obj.preview_image:
+        return mark_safe(
+            f'<img src="{obj.preview_image.url}" width="500" height="300" style="object-fit: cover; border-radius: 5px;"/>')
+    return "No Image"
+
+
+preview_image_admin.short_description = "Preview Image"
 
 
 @admin.register(MTBBike)
 class MTBBikeAdmin(admin.ModelAdmin):
-    list_display = ("brand", "series", "frame", "fork", "wheelset", "drivetrain", "brake", "handlebar")
+    list_display = ("brand", "series", "frame", "fork", "wheelset", "drivetrain", "brake", "handlebar", "preview_image")
     list_select_related = ("brand", "frame", "fork", "wheelset", "drivetrain", "brake", "handlebar")
+    inlines = [BicycleDetailedImageInline]
+
+    readonly_fields = ["preview_image_admin"]
+
+    def preview_image_admin(self, obj):
+        if obj.preview_image:
+            return mark_safe(
+                f'<img src="{obj.preview_image.url}" width="500" height="300" style="object-fit: cover; border-radius: 5px;"/>')
+        return "No Image"
+
+    preview_image_admin.short_description = "Preview Image"
 
 # @admin.register(Case)
 # class CaseAdmin(admin.ModelAdmin):
