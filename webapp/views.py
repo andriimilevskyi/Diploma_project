@@ -6,14 +6,22 @@ from rest_framework.viewsets import ModelViewSet
 from .serializers import MTBBikeSerializer, RoadBikeSerializer  # , OrderSerializer, OrderItemSerializer
 from .models import MTBBike, RoadBike
 
+from rest_framework import mixins, viewsets
 
-class MTBBikeViewSet(ModelViewSet):
+
+class MTBBikeViewSet(mixins.ListModelMixin,
+                     mixins.RetrieveModelMixin,
+                     viewsets.GenericViewSet):
     queryset = MTBBike.objects.all()
     serializer_class = MTBBikeSerializer
 
     @swagger_auto_schema(operation_summary="List All MTB Bikes")
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(operation_summary="Retrieve a Single MTB Bike")
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     # @swagger_auto_schema(operation_summary="Create a New MTB Bike")
     # def create(self, request, *args, **kwargs):
@@ -34,13 +42,19 @@ class MTBBikeViewSet(ModelViewSet):
 #     def destroy(self, request, *args, **kwargs):
 #         return super().destroy(request, *args, **kwargs)
 
-class RoadBikeViewSet(ModelViewSet):
+class RoadBikeViewSet(mixins.ListModelMixin,
+                      mixins.RetrieveModelMixin,
+                      viewsets.GenericViewSet):
     queryset = RoadBike.objects.all()
     serializer_class = RoadBikeSerializer
 
     @swagger_auto_schema(operation_summary="List All Road Bikes")
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(operation_summary="Retrieve a Single Road Bike")
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     # @swagger_auto_schema(operation_summary="Create a New Road Bike")
     # def create(self, request, *args, **kwargs):

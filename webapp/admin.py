@@ -7,7 +7,8 @@ from .models import Frame, Fork, Derailleur, FrontDerailleur, Cassette, Chain, C
     BBStandard, FrontDerailleurMount, BrakeMountStandard, Material, RotorMountType, RotorDiameter, TubeDiameter, \
     HandlebarFlat, HandlebarDrop, HandlebarMount, Stem, ChainringMountStandard, FreehubStandard, BrakePadsCompound, \
     BrakeHoseConnection, BrakeActuation, Brakes, DiskBrakeAdapter, Rim, FrontHub, RearHub, WheelLacing, FrontWheel, \
-    RearWheel, RearShock, RearShockMount, Drivetrain, RoadBike, MTBBike, BicycleDetailedImage
+    RearWheel, RearShock, RearShockMount, Drivetrain, RoadBike, MTBBike, BicycleDetailedImage, \
+    MTBBicycleConfiguration
 
 
 class HiddenModelAdmin(admin.ModelAdmin):
@@ -306,6 +307,11 @@ class MTBBikeAdmin(admin.ModelAdmin):
         return "No Image"
 
     preview_image_admin.short_description = "Preview Image"
+
+
+@admin.register(MTBBicycleConfiguration)
+class MTBBicycleConfigurationAdmin(admin.ModelAdmin):
+    list_display = ("id", "name",)
 
 # @admin.register(Case)
 # class CaseAdmin(admin.ModelAdmin):
