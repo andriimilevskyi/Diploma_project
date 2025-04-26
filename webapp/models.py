@@ -426,7 +426,9 @@ class BrakeActuation(models.Model):
 class BrakeRotor(BikeComponent):
     mount = models.ForeignKey(RotorMountType, on_delete=models.PROTECT, verbose_name="Mount type")
     diameter = models.ForeignKey(RotorDiameter, on_delete=models.PROTECT, verbose_name="Rotor diameter")
-    actuation = models.ForeignKey(BrakeActuation, on_delete=models.PROTECT, verbose_name="Brake actuation type")
+    pads_compatibility = models.ForeignKey(BrakePadsCompound, on_delete=models.PROTECT,
+                                           verbose_name="Brake pads compound compatibility",
+                                           null=True, blank=True)
     image = models.ImageField(upload_to='components/rotors/', verbose_name="Rotor Image", null=True, blank=True)
 
     def __str__(self):
@@ -612,6 +614,7 @@ class Bicycle(models.Model):
     wheelset = models.ForeignKey(WheelSet, on_delete=models.PROTECT, verbose_name="Wheel Set")
     drivetrain = models.ForeignKey(Drivetrain, on_delete=models.PROTECT, verbose_name="Drivetrain")
     brake = models.ForeignKey(Brakes, on_delete=models.PROTECT, verbose_name="Brake")
+    # add rotors
     color = models.CharField(max_length=50, verbose_name="Color")
     weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
@@ -648,6 +651,75 @@ class BicycleDetailedImage(models.Model):
 
     def __str__(self):
         return f"Detailed image for {self.bicycle}"
+
+
+class BicycleConfigurator(models.Model):
+    frame = models.ForeignKey(Frame, on_delete=models.PROTECT, verbose_name="Frame")
+    fork = models.ForeignKey(Fork, on_delete=models.PROTECT, verbose_name="Fork")
+    # Make wheelset or F/R wheel
+    wheelset = models.ForeignKey(WheelSet, on_delete=models.PROTECT, verbose_name="Wheel Set")
+    # Drivetrain
+    crankset = models.ForeignKey(Crankset, on_delete=models.PROTECT, verbose_name="Crankset")
+    bottom_bracket = models.ForeignKey(BottomBracket, on_delete=models.PROTECT, verbose_name="Bottom Bracket")
+    cassette = models.ForeignKey(Cassette, on_delete=models.PROTECT, verbose_name="Cassette")
+    chain = models.ForeignKey(Chain, on_delete=models.PROTECT, verbose_name="Chain")
+    derailleur = models.ForeignKey(Derailleur, on_delete=models.PROTECT, verbose_name="Rear Derailleur")
+    front_derailleur = models.ForeignKey(FrontDerailleur, on_delete=models.PROTECT, verbose_name="Front Derailleur",
+                                         null=True, blank=True)
+    # Brake or custom
+    brake = models.ForeignKey(Brakes, on_delete=models.PROTECT, verbose_name="Brake")
+    # Custom brakes
+
+    front_rotor = models.ForeignKey(BrakeRotor, on_delete=models.PROTECT, verbose_name="Front Rotor",
+                                    related_name='front_rotor_configurations', null=True,
+                                    blank=True)
+    rear_rotor = models.ForeignKey(BrakeRotor, on_delete=models.PROTECT, verbose_name="Rear Rotor",
+                                   related_name='rear_rotor_configurations', null=True,
+                                   blank=True)
+    rear_shifter = models.ForeignKey(Shifter, on_delete=models.PROTECT, related_name='front_shifter_configurations',
+                                     verbose_name="Rear Shifter")
+    front_shifter = models.ForeignKey(Shifter, on_delete=models.PROTECT, related_name='rear_shifter_configurations',
+                                      verbose_name="Front Shifter", null=True,
+                                      blank=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    preview_image = models.ImageField(upload_to='bicycles/', verbose_name="Bicycle Image", null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Calculate total weight and price before saving
+        components = [
+            self.frame, self.fork, self.wheelset,
+            self.crankset, self.bottom_bracket, self.cassette,
+            self.chain, self.derailleur, self.brake, self.rear_shifter
+        ]
+
+        # front derailleur, front and rear rotors, front shifter are optional
+        optional_components = [self.front_derailleur, self.front_rotor, self.rear_rotor, self.front_shifter]
+
+        total_weight = 0
+        total_price = 0
+
+        for component in components + optional_components:
+            if component:  # if it's not None
+                total_weight += component.weight or 0
+                total_price += component.price or 0
+
+        self.weight = total_weight
+        self.price = total_price
+
+        super().save(*args, **kwargs)
+
+    # сделать более детальную
+    class Meta:
+        abstract = True  # Робимо клас абстрактним, щоб не створювалася таблиця
+
+
+class MTBBicycleConfiguration(BicycleConfigurator):
+    name = models.CharField(max_length=25, verbose_name="Bicycle configuration name")
+
+    def __str__(self):
+        return f"Configured {self.name} - {self.id} ({self.__class__.__name__})"
+
 # class Order(models.Model):
 #     first_name = models.CharField(max_length=50, verbose_name="First Name")
 #     last_name = models.CharField(max_length=50, verbose_name="Last Name")
