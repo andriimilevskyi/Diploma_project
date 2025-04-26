@@ -1,6 +1,8 @@
 import React, {useState} from "react";
 import FilterMenu from "./FilterMenu";
 import ProductGrid from "./ProductGrid";
+import ProductCard from "./ProductCard";
+import useProducts from './hook';
 
 
 const MainContentRealisator = () => {
@@ -22,56 +24,10 @@ const MainContentRealisator = () => {
 
   const [appliedFilters, setAppliedFilters] = useState(null);
 
-  const products = [
-    {
-      imgSrc: require("../assets/images/test.jpg"),
-      title: "Reaction Pro 2022",
-      description: "Cube Reaction Pro (L, 470mm) - Hardtail",
-      price: "€999",
-      tags: ["magsafe"],
-      color: "grey",
-    },
-    {
-      imgSrc: require("../assets/images/test.jpg"),
-      title: "Reaction Pro 2022",
-      description: "Cube Reaction Pro (L, 470mm) - Hardtail",
-      price: "€999",
-      tags: ["magsafe"],
-      color: "grey",
-    },
-    {
-      imgSrc: require("../assets/images/test.jpg"),
-      title: "Reaction Pro 2022",
-      description: "Cube Reaction Pro (L, 470mm) - Hardtail",
-      price: "€999",
-      tags: ["magsafe"],
-      color: "grey",
-    },
-    {
-      imgSrc: require("../assets/images/test.jpg"),
-      title: "Reaction Pro 2022",
-      description: "Cube Reaction Pro (L, 470mm) - Hardtail",
-      price: "€999",
-      tags: ["magsafe"],
-      color: "grey",
-    },
-    {
-      imgSrc: require("../assets/images/test.jpg"),
-      title: "Reaction Pro 2022",
-      description: "Cube Reaction Pro (L, 470mm) - Hardtail",
-      price: "€999",
-      tags: ["magsafe"],
-      color: "grey",
-    },
-    {
-      imgSrc: require("../assets/images/test.jpg"),
-      title: "Reaction Pro 2022",
-      description: "Cube Reaction Pro (L, 470mm) - Hardtail",
-      price: "€999",
-      tags: ["magsafe"],
-      color: "grey",
-    },
-  ];
+   const {products, loading, error} = useProducts();
+
+   if (loading) return <div>Loading...</div>;
+   if (error) return <div>Error: {error.message}</div>;
 
   // Функція для перетворення ціни з рядка на число
   const parsePrice = (priceStr) => {
@@ -115,11 +71,13 @@ const MainContentRealisator = () => {
     : products;
 
     return (
-    <div className="main-content">
-      <FilterMenu filters={filters} onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
-      <ProductGrid products={filteredProducts} />
-    </div>
-  );
+      <div className="main-content">
+        <FilterMenu filters={filters} onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} />
+        <ProductGrid products={filteredProducts} />
+
+
+      </div>
+    );
 };
 
 export default MainContentRealisator;

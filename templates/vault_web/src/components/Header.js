@@ -10,7 +10,7 @@ function Header() {
         <Link to="/"><div className="logo"><img src={logo} alt="Logo" /></div></Link>
         <nav className="nav">
             <ul>
-                <li><Link to="/configmeasure" className="next-link">Configurator</Link></li>
+                <li><button className="next-btn"><Link to="/configmeasure" className="next-link">Configurator</Link></button></li>
             </ul>
         </nav>
       </div>

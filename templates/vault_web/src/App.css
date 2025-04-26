@@ -22,7 +22,7 @@ body {
 
 .main-content {
   display: flex;
-  max-width: 1200px;
+  max-width: 2000px;
   margin: 0 auto;
   padding: 20px;
 }

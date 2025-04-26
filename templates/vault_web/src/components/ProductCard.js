@@ -1,13 +1,17 @@
 import React from "react";
 import './ProductCard.css';
+import { Link } from 'react-router-dom';
+import useProducts from './hook';
 
-function ProductCard({ imgSrc, title, description, price }) {
+function ProductCard({ id, image, series, description, price }) {
   return (
     <div className="product-card">
-      <img src={imgSrc} alt="Product" />
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <p>{price}</p>
+        <Link to={`/product/${id}` }>
+          <img src={image} alt="Product" />
+          <h3>{series}</h3>
+          <p>{description}</p>
+          <p>{price}</p>
+        </Link>
     </div>
   );
 }

@@ -7,7 +7,7 @@ const useProducts = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get('http://alb-vaultweb-807815283.eu-north-1.elb.amazonaws.com/api/cases/')
+        axios.get('http://127.0.0.1:8000/api/mtb/')
             .then(response => {
                 setProducts(response.data);
                 setLoading(false);

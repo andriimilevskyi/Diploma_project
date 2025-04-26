@@ -1,5 +1,6 @@
 .product-card {
-  width: 288.46px;
+  width: 350px;
+  height: 350px;
   border: 1px solid #eaeaea;
   border-radius: 8px;
   padding: 10px;
@@ -8,17 +9,24 @@
 }
 
 img {
-  width: 288.46px;
+  width: 350px;
 }
 
 .product-card h3 {
-  font-size: 16px;
+  font-size: 20px;
   margin: 10px 0;
+  text-align: left;
 }
 
 .product-card p {
   font-size: 14px;
   margin-bottom: 10px;
+  text-align: left;
+}
+
+a {
+  text-decoration: none; /* прибирає підкреслення */
+  color: inherit;
 }
 
 button {
