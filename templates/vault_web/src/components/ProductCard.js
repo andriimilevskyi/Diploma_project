@@ -1,7 +1,6 @@
 import React from "react";
 import './ProductCard.css';
 import { Link } from 'react-router-dom';
-import useProducts from './hook';
 
 function ProductCard({ id, image, series, description, price }) {
   return (
@@ -10,7 +9,7 @@ function ProductCard({ id, image, series, description, price }) {
           <img src={image} alt="Product" />
           <h3>{series}</h3>
           <p>{description}</p>
-          <p>{price}</p>
+          <p>{price}€</p>
         </Link>
     </div>
   );

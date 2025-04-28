@@ -27,7 +27,7 @@
 }
 .in-container button.selected {
     border: 5px solid #005ab9;
-    border-radius: 13px;
+    border-radius: 5px;
 }
 
 .in-block {

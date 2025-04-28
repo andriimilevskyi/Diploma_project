@@ -8,7 +8,7 @@ import ConfigDescipline from "./components/ConfigDescipline.js";
 import ConfigSelector from "./components/ConfigSelector.js";
 import MainContentRealisator from "./components/MainContentRealisator";
 import ProductDetails from './components/ProductDetails';
-
+import CartPage from "./components/CartPage";
 
 function App() {
   return (
@@ -21,6 +21,7 @@ function App() {
           <Route path="/configdescipline" element={<ConfigDescipline />} />
           <Route path="/configselector" element={<ConfigSelector />} />
           <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
         <Footer />
       </div>

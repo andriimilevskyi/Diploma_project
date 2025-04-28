@@ -7,12 +7,13 @@
 }
 
 .product-details img {
-    width: 800px;
-    height: 500px;
+    width: 700px;
+    height: 400px;
 }
 
 .description {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    width: 400px;
 }

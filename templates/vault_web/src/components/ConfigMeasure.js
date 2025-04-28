@@ -44,7 +44,7 @@ const ConfigMeasure = () => {
                 </div>
             </div>
 
-            <button className="next-btn" onClick={handleSubmit}><Link to="/configdescipline" className="next-link">Next →</Link></button>
+            <button className="next-btn" onClick={handleSubmit}><Link to="/configdescipline" className="next-link">Далі →</Link></button>
         </div>
         </div>
     );

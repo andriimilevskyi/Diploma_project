@@ -24,6 +24,7 @@
 }
 
 .header-div .nav {
+    display: flex;
     margin-left: 15px;
     cursor: pointer;
     font-weight: 600;
@@ -37,7 +38,7 @@
 
 .nav li button{
     margin: 0;
-    width: 150px;
+    width: 170px;
 }
 
 .header-div .nav ul {
@@ -55,4 +56,17 @@
 
 .header-div .nav li:hover {
     transform: scale(1.1);
+}
+
+.auth-btn {
+    color: black;
+    background: none;
+    font-size: 17px;
+}
+
+.cart-btn {
+    color: black;
+    background: none;
+    font-size: 20px;
+    width: 80px;
 }

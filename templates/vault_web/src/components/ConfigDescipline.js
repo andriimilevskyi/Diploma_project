@@ -53,8 +53,8 @@ const ConfigDescipline = () => {
                 </div>
 
 
-                    <button className="prev-btn"><Link to="/configmeasure" className="next-link">← Previous</Link></button>
-                    <button className="next-btn" onClick={handleSubmit}><Link to="/configselector" className="next-link">Next →</Link></button>
+                    <button className="prev-btn"><Link to="/configmeasure" className="next-link">← Назад</Link></button>
+                    <button className="next-btn" onClick={handleSubmit}><Link to="/configselector" className="next-link">Далі →</Link></button>
 
             </div>
         </div>

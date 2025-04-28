@@ -1,6 +1,6 @@
 .product-card {
   width: 350px;
-  height: 350px;
+  height: 300px;
   border: 1px solid #eaeaea;
   border-radius: 8px;
   padding: 10px;
@@ -45,4 +45,21 @@ button:hover {
   background-color: #7e7e7e;
   color: white;
   transition: all 0.3s ease-in;
+}
+
+.image-scroll-container {
+  max-height: 300px; /* висота блоку */
+  overflow-y: auto; /* вертикальний скрол */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.detail-image {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 5px;
 }

@@ -53,12 +53,12 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
 
   return (
     <div className="filter-menu">
-      <h2>Filter & Sort</h2>
+      <h2>Фільтр</h2>
 
       {/* Features Section */}
       <div className="filter-section">
         <div className="filter-header" onClick={toggleFeatures}>
-          Features
+          Цільове призначення
           <span className={`arrow ${isFeaturesOpen ? "open" : ""}`}>▼</span>
         </div>
         {isFeaturesOpen && (
@@ -97,7 +97,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
       {/* Colour Section */}
       <div className="filter-section">
         <div className="filter-header" onClick={toggleColour}>
-          Colour
+          Колір
           <span className={`arrow ${isColourOpen ? "open" : ""}`}>▼</span>
         </div>
         {isColourOpen && (
@@ -151,7 +151,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
       {/* Price Section */}
       <div className="filter-section">
         <div className="filter-header" onClick={togglePrice}>
-          Price
+          Ціна
           <span className={`arrow ${isPriceOpen ? "open" : ""}`}>▼</span>
         </div>
         {isPriceOpen && (
@@ -171,9 +171,85 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
         )}
       </div>
 
+      <div className="filter-section">
+        <div className="filter-header" onClick={toggleFeatures}>
+          Тип трансмісії
+          <span className={`arrow ${isFeaturesOpen ? "open" : ""}`}>▼</span>
+        </div>
+        {isFeaturesOpen && (
+          <ul className="filter-options">
+            <li>
+              <input
+                type="checkbox"
+                id="magsafe"
+                checked={filters.magsafe}
+                onChange={handleCheckboxChange}
+              />
+              MagSafe® Compatible
+            </li>
+            <li>
+              <input
+                type="checkbox"
+                id="thin"
+                checked={filters.thin}
+                onChange={handleCheckboxChange}
+              />
+              Thin Protective
+            </li>
+            <li>
+              <input
+                type="checkbox"
+                id="designs"
+                checked={filters.designs}
+                onChange={handleCheckboxChange}
+              />
+              Spec Designs
+            </li>
+          </ul>
+        )}
+      </div>
+
+      <div className="filter-section">
+        <div className="filter-header" onClick={toggleFeatures}>
+          Розмір рами
+          <span className={`arrow ${isFeaturesOpen ? "open" : ""}`}>▼</span>
+        </div>
+        {isFeaturesOpen && (
+          <ul className="filter-options">
+            <li>
+              <input
+                type="checkbox"
+                id="magsafe"
+                checked={filters.magsafe}
+                onChange={handleCheckboxChange}
+              />
+              MagSafe® Compatible
+            </li>
+            <li>
+              <input
+                type="checkbox"
+                id="thin"
+                checked={filters.thin}
+                onChange={handleCheckboxChange}
+              />
+              Thin Protective
+            </li>
+            <li>
+              <input
+                type="checkbox"
+                id="designs"
+                checked={filters.designs}
+                onChange={handleCheckboxChange}
+              />
+              Spec Designs
+            </li>
+          </ul>
+        )}
+      </div>
+
       {/* Apply Filters Button */}
       <button className="apply-filters" onClick={onApplyFilters}>
-        Apply Filters
+        Застосувати
       </button>
     </div>
   );
