@@ -15,6 +15,15 @@ const ConfigSelector = () => {
     setSelected(index === selected ? null : index); // Вибір нової кнопки або скидання вибору
   };
 
+    const frames = [
+      { image: frameImage1, title: "BC ORIGINAL FLINT", price: "449.00€" },
+      { image: frameImage2, title: "Specialized Chisel 29", price: "1590.00€" },
+      { image: frameImage3, title: "BC ORIGINAL FLINT", price: "449.00€" },
+      { image: frameImage4, title: "Specialized Chisel 29", price: "1590.00€" },
+      { image: frameImage1, title: "BC ORIGINAL FLINT", price: "449.00€" },
+      { image: frameImage2, title: "Specialized Chisel 29", price: "1590.00€" }
+    ];
+
   return (
     <div className="frame-selector">
       <div className="main-frame">
@@ -22,21 +31,22 @@ const ConfigSelector = () => {
       </div>
 
       <div className="frame-options">
-        {[frameImage1, frameImage2, frameImage3, frameImage4, frameImage1, frameImage1].map((image, index) => (
+        {frames.map((frame, index) => (
           <button
             key={index}
             className={`option-card-btn ${selected === index ? 'selected' : ''}`}
             onClick={() => handleButtonClick(index)}
           >
             <div className="option-card">
-              <div className="frame-thumbnail"><img src={image} alt="frame" /></div>
+              <div className="frame-thumbnail"><img src={frame.image} alt="frame" /></div>
               <div className="frame-info">
-                <h4>BC ORIGINAL FLINT</h4>
-                <p>Size = M</p>
-                <p>449.00€</p>
+                  <h4>{frame.title}</h4>
+                  <p>Size = M</p>
+                  <p>{frame.price}</p>
               </div>
             </div>
-          </button>
+           </button>
+
         ))}
       </div>
 

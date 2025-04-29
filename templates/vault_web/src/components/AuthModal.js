@@ -5,7 +5,7 @@ function AuthModal({ onClose }) {
   return (
     <div className="auth-modal">
       <div className="auth-content">
-        <button onClick={onClose}>X</button>
+        <button className="auth-btn" onClick={onClose}>X</button>
         <h2>Вхід / Реєстрація</h2>
         <form>
           <input type="email" placeholder="Email" required />

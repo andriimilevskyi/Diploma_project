@@ -98,6 +98,7 @@
 
 .option-card-btn:hover {
     border: 2px solid #005ab9;
+    color: black;
 }
 .option-card-btn.selected {
     border: 5px solid #005ab9;
