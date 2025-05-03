@@ -32,7 +32,7 @@ function CartPage() {
           ))}
           <div style={{marginBottom: '100px'}}>
               <h2>Всього: {totalPrice}€</h2>
-              <button onClick={clearCart}>Оплатити</button>
+              <button onClick={clearCart}>Оформити замовлення</button>
           </div>
         </>
       )}

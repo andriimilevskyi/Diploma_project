@@ -18,10 +18,10 @@ const ConfigSelector = () => {
     const frames = [
       { image: frameImage1, title: "BC ORIGINAL FLINT", price: "449.00€" },
       { image: frameImage2, title: "Specialized Chisel 29", price: "1590.00€" },
-      { image: frameImage3, title: "BC ORIGINAL FLINT", price: "449.00€" },
-      { image: frameImage4, title: "Specialized Chisel 29", price: "1590.00€" },
-      { image: frameImage1, title: "BC ORIGINAL FLINT", price: "449.00€" },
-      { image: frameImage2, title: "Specialized Chisel 29", price: "1590.00€" }
+      { image: frameImage3, title: "Specialized Chisel 29", price: "1590.00€" },
+      { image: frameImage4, title: "BC ORIGINAL FLINT", price: "449.00€" },
+
+      
     ];
 
   return (

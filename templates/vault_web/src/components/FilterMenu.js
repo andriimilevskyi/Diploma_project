@@ -159,7 +159,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
             <Slider
               range
               min={0}
-              max={100}
+              max={17450}
               defaultValue={[filters.priceRange.min, filters.priceRange.max]}
               onChange={handlePriceChange}
             />

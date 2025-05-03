@@ -16,12 +16,12 @@ const ConfigMeasure = () => {
     return (
     <div className="bodycon">
         <div className="configmeasure">
-            <h2>What is your height?</h2>
+            <h2>Який ваш зріст?</h2>
 
             <div className="inputs-container">
                 <div className="input-block">
                     <img src={heightimg} alt="Зріст" />
-                    <label>Enter height</label>
+                    <label>Введіть зріст</label>
                     <input
                         type="number"
                         value={height}
@@ -33,7 +33,7 @@ const ConfigMeasure = () => {
 
                 <div className="input-block">
                     <img src={inseamimg} alt="Внутрішня висота" />
-                    <label>Enter inseam length</label>
+                    <label>Введіть довжину ноги</label>
                     <input
                         type="number"
                         value={innerHeight}

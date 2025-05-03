@@ -27,15 +27,15 @@ const ConfigDescipline = () => {
     return (
         <div className="descrcon">
             <div className="configdescp">
-                <h2>Choose your descipline</h2>
+                <h2>Оберіть дисципліну</h2>
 
                 <div className="in-container">
                     {[
                         { name: "XC", img: xcimg },
                         { name: "DH", img: dhimg },
-                        { name: "City", img: cityimg },
-                        { name: "Road", img: roadimg },
-                        { name: "Gravel", img: gravelimg }
+                        { name: "Місто", img: cityimg },
+                        { name: "Траса", img: roadimg },
+                        { name: "Гравій", img: gravelimg }
                     ].map((item) => (
                         <button
                             key={item.name}
