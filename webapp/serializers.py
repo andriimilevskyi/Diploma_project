@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 # from .models import Case, Order, OrderItem
-from .models import MTBBike, RoadBike, BicycleDetailedImage
+from .models import MTBBike, RoadBike, BicycleDetailedImage, Frame
 
 
 class BicycleDetailedImageSerializer(serializers.ModelSerializer):
@@ -63,6 +63,14 @@ class RoadBikeSerializer(serializers.ModelSerializer):
         )
         return BicycleDetailedImageSerializer(images, many=True, context=self.context).data
 
+
+class FrameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Frame
+        fields = [
+            'id', 'brand', 'series', 'type', 'wheel_size', 'tyre_size', 'size',
+            'material', 'color', 'weight', 'price', 'image'
+        ]
 # class OrderItemSerializer(serializers.ModelSerializer):
 #     case = serializers.PrimaryKeyRelatedField(queryset=Case.objects.all())  # Only the ID of the related case
 #
