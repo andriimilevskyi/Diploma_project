@@ -2,13 +2,16 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 # from .views import CaseViewSet, OrderViewSet, OrderItemViewSet
 from rest_framework.routers import DefaultRouter
-from .views import MTBBikeViewSet, RoadBikeViewSet
+from .views import MTBBikeViewSet, RoadBikeViewSet, FrameRecommendationAPIView
 
 router = DefaultRouter()
 router.register(r'mtb', MTBBikeViewSet, basename='mtb')
 router.register(r'road', RoadBikeViewSet, basename='road')
+urlpatterns = [
+    path('conf/frames/', FrameRecommendationAPIView.as_view(), name='frames'),
+]
 
-urlpatterns = router.urls
+urlpatterns += router.urls
 
 # urlpatterns = [
 

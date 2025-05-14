@@ -1,11 +1,29 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import AbstractUser
 
 
 # https://acode.com.ua/inheritance-python/
 
 # Create your models here.
+
+
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    delivery_address = models.TextField()
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+    # def get_order_history(self):
+    #     return self.orders.all()
+
+    # def get_saved_configurations(self):
+    #     return self.bicycle_configurations.all()
 
 
 # class Case(models.Model):
@@ -38,22 +56,6 @@ from django.contrib.contenttypes.models import ContentType
 #
 #     def __str__(self):
 #         return f"{self.name} ({self.type})"
-
-
-# Базовий клас для загальних характеристик велосипедних компонентів
-class BikeComponent(models.Model):
-    brand = models.ForeignKey("Brand", on_delete=models.CASCADE, verbose_name="Brand name", db_index=True)
-    series = models.CharField(max_length=100, verbose_name="Series Name", db_index=True)
-    application = models.ForeignKey("Application", on_delete=models.CASCADE, verbose_name="Application", db_index=True)
-    material = models.ForeignKey("Material", on_delete=models.PROTECT, verbose_name="Material", db_index=True)
-    features = models.TextField(verbose_name="Features", blank=True, null=True)
-    technology = models.TextField(verbose_name="Technology", blank=True, null=True)
-    color = models.CharField(max_length=50, verbose_name="Color", db_index=True)
-    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
-
-    class Meta:
-        abstract = True
 
 
 class Brand(models.Model):
@@ -153,6 +155,23 @@ class RearShockMount(models.Model):
 
     def __str__(self):
         return f"{self.mount_type}"
+
+
+# Базовий клас для загальних характеристик велосипедних компонентів
+class BikeComponent(models.Model):
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name", db_index=True)
+    series = models.CharField(max_length=100, verbose_name="Series Name", db_index=True)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE, verbose_name="Application", db_index=True)
+    material = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Material", db_index=True)
+    features = models.TextField(verbose_name="Features", blank=True, null=True)
+    technology = models.TextField(verbose_name="Technology", blank=True, null=True)
+    color = models.CharField(max_length=50, verbose_name="Color", db_index=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=3, verbose_name="Weight (kg)", null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price (€)", null=True, blank=True)
+    manufacturer_num = models.CharField(max_length=15, verbose_name="Manufacturer number", db_index=True)
+
+    class Meta:
+        abstract = True
 
 
 class Frame(BikeComponent):
@@ -716,9 +735,40 @@ class BicycleConfigurator(models.Model):
 
 class MTBBicycleConfiguration(BicycleConfigurator):
     name = models.CharField(max_length=25, verbose_name="Bicycle configuration name")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Configured {self.name} - {self.id} ({self.__class__.__name__})"
+
+
+class Order(models.Model):
+    user = models.ForeignKey('User', related_name='orders', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed')],
+                              default='pending')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    shipping_address = models.TextField()
+
+    def __str__(self):
+        return f"Order {self.id} - {self.user.first_name} {self.user.last_name}"
+
+    def calculate_total_price(self):
+        order_items = self.order_items.all()
+        return sum([item.calculate_item_price() for item in order_items])
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
+    bicycle = models.ForeignKey(MTBBike, null=True, blank=True, on_delete=models.SET_NULL)
+    bicycle_configurator = models.ForeignKey(MTBBicycleConfiguration, null=True, blank=True, on_delete=models.SET_NULL)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"Item {self.id} - {self.bicycle or self.bicycle_configurator}"
+
+    def calculate_item_price(self):
+        return self.quantity * self.price
 
 # class Order(models.Model):
 #     first_name = models.CharField(max_length=50, verbose_name="First Name")

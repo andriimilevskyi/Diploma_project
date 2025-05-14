@@ -1,11 +1,16 @@
 # Create your views here.
 # myapp/views.py
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.viewsets import ModelViewSet
+from drf_yasg import openapi
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 # from .models import Case, Order, OrderItem
-from .serializers import MTBBikeSerializer, RoadBikeSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike
-
+from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
+    FrameSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame
+from django.db.models import F, ExpressionWrapper, FloatField
+from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
 
 
@@ -59,6 +64,54 @@ class RoadBikeViewSet(mixins.ListModelMixin,
     # @swagger_auto_schema(operation_summary="Create a New Road Bike")
     # def create(self, request, *args, **kwargs):
     #     return super().create(request, *args, **kwargs)
+
+
+class FrameRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Отримати рекомендовані рами на основі зросту та висоти ноги",
+        manual_parameters=[
+            openapi.Parameter('discipline', openapi.IN_QUERY, description="ID дисципліни", type=openapi.TYPE_INTEGER,
+                              required=True),
+            openapi.Parameter('height', openapi.IN_QUERY, description="Зріст користувача (в см)",
+                              type=openapi.TYPE_NUMBER, required=True),
+            openapi.Parameter('inseam', openapi.IN_QUERY, description="Висота ноги (в см)", type=openapi.TYPE_NUMBER,
+                              required=True),
+        ]
+    )
+    def get(self, request):
+        try:
+            discipline_id = request.GET.get('discipline')
+            height = request.GET.get('height')
+            inseam = request.GET.get('inseam')
+
+            if not (discipline_id and height and inseam):
+                return Response({"error": "Всі параметри (discipline, height, inseam) є обов’язковими."},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            discipline_id = int(discipline_id)
+            height = float(height)
+            inseam = float(inseam)
+
+            target_seatpost = inseam * 0.65
+
+            frames = Frame.objects.filter(
+                application_id=discipline_id,
+                min_rider_height__lte=height,
+                max_rider_height__gte=height
+            ).annotate(
+                seatpost_diff=Abs(F('seatpost') - target_seatpost)
+            ).order_by('seatpost_diff')
+
+            serializer = FrameSerializer(frames, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except ValueError:
+            return Response({"error": "Некоректні числові значення параметрів."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"error": f"Внутрішня помилка сервера: {str(e)}"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # class OrderViewSet(ModelViewSet):
 #     queryset = Order.objects.all()
