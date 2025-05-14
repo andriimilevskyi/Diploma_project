@@ -150,6 +150,13 @@ class TubeDiameter(models.Model):
         return f"{self.diameter}mm"
 
 
+class SteererType(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name="Steerer Tube Type")
+
+    def __str__(self):
+        return self.name
+
+
 class RearShockMount(models.Model):
     mount_type = models.CharField(max_length=100, verbose_name="Rear Shock mount type")
 
@@ -187,10 +194,11 @@ class Frame(BikeComponent):
                                            null=True, blank=True)
     bb_standard = models.ForeignKey(BBStandard, on_delete=models.PROTECT, verbose_name="Bottom Bracket Standard")
     fork_travel = models.PositiveIntegerField(verbose_name="Fork Travel", blank=True, null=True)
-
+    steerer_type = models.ForeignKey(SteererType, on_delete=models.PROTECT, verbose_name="Steerer Tube Type")
     full_suspension = models.BooleanField(verbose_name="Full Suspension Bike")
-    rs_size_length = models.PositiveIntegerField(verbose_name="Size Eye-to-Eye in mm", null=True, blank=True)
-    rs_stroke = models.DecimalField(max_digits=4, decimal_places=1, verbose_name="Stroke in mm", null=True, blank=True)
+    rs_size_length = models.PositiveIntegerField(verbose_name="Rear Shock Size Eye-to-Eye in mm", null=True, blank=True)
+    rs_stroke = models.DecimalField(max_digits=4, decimal_places=1, verbose_name="Rear Shock Stroke in mm", null=True,
+                                    blank=True)
     rs_mount = models.ForeignKey(RearShockMount, on_delete=models.PROTECT, verbose_name="Rear Shock Mount", null=True,
                                  blank=True)
     front_derailleur_mount = models.ForeignKey(FrontDerailleurMount, on_delete=models.PROTECT,
@@ -215,6 +223,7 @@ class Fork(BikeComponent):
     wheel_size = models.ForeignKey(WheelSize, on_delete=models.CASCADE)
     suspension_type = models.CharField(max_length=100, verbose_name="Suspension type")
     stem_diameter = models.ForeignKey(TubeDiameter, on_delete=models.PROTECT, verbose_name="Steerer Tube Diameter")
+    steerer_type = models.ForeignKey(SteererType, on_delete=models.PROTECT, verbose_name="Steerer Tube Type")
     travel = models.PositiveIntegerField(verbose_name="Fork Travel in mm")
     offset = models.PositiveIntegerField(verbose_name="Offset in mm")
     axle_type = models.ForeignKey(AxleType, on_delete=models.CASCADE, verbose_name="Axle type")
