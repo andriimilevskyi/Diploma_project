@@ -1,5 +1,6 @@
 # Create your views here.
 # myapp/views.py
+from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.views import APIView
@@ -7,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 # from .models import Case, Order, OrderItem
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
-    FrameSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike, Frame
+    FrameSerializer, ForkSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame, Fork
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -68,7 +69,7 @@ class RoadBikeViewSet(mixins.ListModelMixin,
 
 class FrameRecommendationAPIView(APIView):
     @swagger_auto_schema(
-        operation_summary="Отримати рекомендовані рами на основі зросту та висоти ноги",
+        operation_summary="GET рекомендовані рами на основі зросту та висоти ноги",
         manual_parameters=[
             openapi.Parameter('discipline', openapi.IN_QUERY, description="ID дисципліни", type=openapi.TYPE_INTEGER,
                               required=True),
@@ -112,6 +113,42 @@ class FrameRecommendationAPIView(APIView):
         except Exception as e:
             return Response({"error": f"Внутрішня помилка сервера: {str(e)}"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ForkRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="GET рекомендовані вилки на основі обраної рами (допуск ходу ±10 мм)",
+        manual_parameters=[
+            openapi.Parameter('frame_id', openapi.IN_QUERY, description="ID рами", type=openapi.TYPE_INTEGER),
+        ]
+    )
+    def get(self, request):
+        try:
+            frame_id = request.GET.get('frame_id')
+            if not frame_id:
+                return Response({"error": "Missing frame_id parameter."}, status=status.HTTP_400_BAD_REQUEST)
+
+            frame = get_object_or_404(Frame, pk=frame_id)
+
+            forks = Fork.objects.filter(
+                wheel_size=frame.wheel_size,
+                steerer_type=frame.steerer_type
+                # axle_type=frame.axle_type,
+                # brake_mount=frame.brake_mount
+            )
+
+            # Допуск ±10мм
+            if frame.fork_travel:
+                forks = forks.filter(
+                    travel__gte=frame.fork_travel - 10,
+                    travel__lte=frame.fork_travel + 10
+                )
+
+            serializer = ForkSerializer(forks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # class OrderViewSet(ModelViewSet):
 #     queryset = Order.objects.all()
