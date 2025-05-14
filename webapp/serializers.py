@@ -65,12 +65,20 @@ class RoadBikeSerializer(serializers.ModelSerializer):
 
 
 class FrameSerializer(serializers.ModelSerializer):
+    # Serialize brand and material as names (not IDs) to improve readability in JSON output
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    material = serializers.CharField(source='material.material_name', read_only=True)
+
     class Meta:
         model = Frame
         fields = [
-            'id', 'brand', 'series', 'type', 'wheel_size', 'tyre_size', 'size',
-            'material', 'color', 'weight', 'price', 'image'
+            'id', 'brand', 'series', 'type',
+            'wheel_size', 'tyre_size', 'size', 'material',
+            'color', 'weight', 'price', 'image'
         ]
+
+
+
 # class OrderItemSerializer(serializers.ModelSerializer):
 #     case = serializers.PrimaryKeyRelatedField(queryset=Case.objects.all())  # Only the ID of the related case
 #
