@@ -1,33 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, Link } from "react-router-dom";
 import './ConfigSelector.css';
-import { Link } from "react-router-dom";
-import frameImage1 from '../assets/images/G53989_JEALOUS_CF_RA2500_800x800@2x.jpg';
-import frameImage2 from '../assets/images/d983ad9e5edbe3b7.png';
-import frameImage3 from '../assets/images/8519aaa9fd63ba3e.png';
-import frameImage4 from '../assets/images/sticker 2.png';
 
 const ConfigSelector = () => {
-  // Стан для відстеження вибраної кнопки
+  const [frames, setFrames] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  // Обробник для натискання кнопки
+  // Отримуємо стан із попередньої форми, якщо він є
+  const location = useLocation();
+  const { height, inseam, discipline } = location.state || { height: 180, inseam: 70, discipline: 1 };
+
+  useEffect(() => {
+    const fetchFrames = () => {
+      const apiUrl = `http://127.0.0.1:8000/api/conf/frames/?discipline=${discipline}&height=${height}&inseam=${inseam}`;
+      fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Accept": "application/json",
+          "X-CSRFToken": "F8bcVkhrUT1tt3W8kpGcxzan1zxtQ9KQ38nblbEwaHxnTbdiOfbfI6gbcYqcOKlAQ"
+        }
+      })
+        .then(res => res.json())
+        .then(data => setFrames(data))
+        .catch(err => console.error("Fetch error:", err));
+    };
+
+    fetchFrames();
+  }, [height, inseam, discipline]); // Перезавантажувати дані, коли height, inseam або discipline змінюються
+
   const handleButtonClick = (index) => {
-    setSelected(index === selected ? null : index); // Вибір нової кнопки або скидання вибору
+    setSelected(index);
   };
-
-    const frames = [
-      { image: frameImage1, title: "BC ORIGINAL FLINT", price: "449.00€" },
-      { image: frameImage2, title: "Specialized Chisel 29", price: "1590.00€" },
-      { image: frameImage3, title: "Specialized Chisel 29", price: "1590.00€" },
-      { image: frameImage4, title: "BC ORIGINAL FLINT", price: "449.00€" },
-
-      
-    ];
 
   return (
     <div className="frame-selector">
       <div className="main-frame">
-        <div className="frame-placeholder"><img src={frameImage4} alt="frame" /></div>
+        <div className="frame-placeholder">
+          {selected !== null && frames[selected] ? (
+            <img src={frames[selected].image} alt="frame" />
+          ) : (
+            <p>Оберіть раму справа</p>
+          )}
+        </div>
       </div>
 
       <div className="frame-options">
@@ -38,21 +52,26 @@ const ConfigSelector = () => {
             onClick={() => handleButtonClick(index)}
           >
             <div className="option-card">
-              <div className="frame-thumbnail"><img src={frame.image} alt="frame" /></div>
+              <div className="frame-thumbnail">
+                <img src={frame.image} alt={frame.series} />
+              </div>
               <div className="frame-info">
-                  <h4>{frame.title}</h4>
-                  <p>Size = M</p>
-                  <p>{frame.price}</p>
+                <h4>{frame.series}</h4>
+                <p>Size: {frame.size}</p>
+                <p>{frame.price}€</p>
               </div>
             </div>
-           </button>
-
+          </button>
         ))}
       </div>
 
       <div className="navigation-buttons">
-        <button className="prev-btn"><Link to="/configdescipline" className="next-link">← Назад</Link></button>
-        <button className="next-btn"><Link to="/confige" className="next-link">Далі →</Link></button>
+        <button className="prev-btn">
+          <Link to="/configdescipline" className="next-link">← Назад</Link>
+        </button>
+        <button className="next-btn">
+          <Link to="/confige" className="next-link">Далі →</Link>
+        </button>
       </div>
     </div>
   );
