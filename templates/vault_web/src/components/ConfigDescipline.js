@@ -1,27 +1,43 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import './ConfigDescipline.css';
-import { Link } from "react-router-dom";
 import xcimg from "../assets/images/XC.png";
 import dhimg from "../assets/images/DH.png";
 import cityimg from "../assets/images/City.png";
 import roadimg from "../assets/images/Road.png";
 import gravelimg from "../assets/images/Gravel.png";
 
+const disciplineMap = {
+    XC: 1,
+    DH: 2,
+    "Місто": 3,
+    "Траса": 4,
+    "Гравій": 5,
+};
+
 const ConfigDescipline = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { height, inseam } = location.state || {};
     const [selectedDiscipline, setSelectedDiscipline] = useState(null);
 
     const handleSelect = (discipline) => {
         setSelectedDiscipline(discipline);
-        console.log("User selected:", discipline);
     };
 
     const handleSubmit = () => {
-        if (selectedDiscipline) {
-            console.log("Submitting:", selectedDiscipline);
-            // Тут можна зберегти вибір або передати його далі
-        } else {
-            alert("Please select a discipline before proceeding.");
+        if (!selectedDiscipline) {
+            alert("Будь ласка, оберіть дисципліну.");
+            return;
         }
+
+        navigate("/configselector", {
+            state: {
+                height,
+                inseam,
+                discipline: disciplineMap[selectedDiscipline],
+            },
+        });
     };
 
     return (
@@ -48,14 +64,10 @@ const ConfigDescipline = () => {
                             </div>
                         </button>
                     ))}
-
-
                 </div>
 
-
-                    <button className="prev-btn"><Link to="/configmeasure" className="next-link">← Назад</Link></button>
-                    <button className="next-btn" onClick={handleSubmit}><Link to="/configselector" className="next-link">Далі →</Link></button>
-
+                <button className="prev-btn" onClick={() => navigate("/configmeasure")}>← Назад</button>
+                <button className="next-btn" onClick={handleSubmit}>Далі →</button>
             </div>
         </div>
     );

@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ConfigMeasure from "./components/ConfigMeasure.js";
 import ConfigDescipline from "./components/ConfigDescipline.js";
 import ConfigSelector from "./components/ConfigSelector.js";
+import ConfigFork from "./components/ConfigFork.js";
 import MainContentRealisator from "./components/MainContentRealisator";
 import ProductDetails from './components/ProductDetails';
 import CartPage from "./components/CartPage";
@@ -20,6 +21,7 @@ function App() {
           <Route path="/configmeasure" element={<ConfigMeasure />} />
           <Route path="/configdescipline" element={<ConfigDescipline />} />
           <Route path="/configselector" element={<ConfigSelector />} />
+          <Route path="/configfork" element={<ConfigFork />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<CartPage />} />
         </Routes>

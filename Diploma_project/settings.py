@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'Diploma_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bicycle_configurator_v3',
+        'NAME': 'bicycle_configurator_v4',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',

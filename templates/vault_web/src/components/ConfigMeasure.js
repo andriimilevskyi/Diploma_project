@@ -1,20 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import './ConfigMeasure.css';
-import { Link } from "react-router-dom";
-import heightimg from "../assets/images/Height.png";
-import inseamimg from "../assets/images/Inseam.png";
+import heightimg from '../assets/images/Height.png';
+import inseamimg from '../assets/images/Inseam.png';
 
 const ConfigMeasure = () => {
-    const [height, setHeight] = useState("");
-    const [innerHeight, setInnerHeight] = useState("");
+    const [height, setHeight] = useState('');
+    const [innerHeight, setInnerHeight] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(`Зріст: ${height} см, Внутрішня висота: ${innerHeight} см`);
+    const handleSubmit = () => {
+        if (!height || !innerHeight) {
+            alert("Будь ласка, введіть усі дані.");
+            return;
+        }
+
+        navigate("/configdescipline", {
+            state: {
+                height: Number(height),
+                inseam: Number(innerHeight),
+            }
+        });
     };
 
     return (
-    <div className="bodycon">
         <div className="configmeasure">
             <h2>Який ваш зріст?</h2>
 
@@ -44,8 +53,7 @@ const ConfigMeasure = () => {
                 </div>
             </div>
 
-            <button className="next-btn" onClick={handleSubmit}><Link to="/configdescipline" className="next-link">Далі →</Link></button>
-        </div>
+            <button className="next-btn" onClick={handleSubmit}>Далі →</button>
         </div>
     );
 };
