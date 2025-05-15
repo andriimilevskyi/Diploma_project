@@ -578,6 +578,9 @@ class Wheel(BikeComponent):
     rotor_mount = models.ForeignKey(RotorMountType, on_delete=models.PROTECT, verbose_name="Rotor mount type")
     tubeless_ready = models.BooleanField(verbose_name="Tubeless Ready")
     color = models.CharField(max_length=50, verbose_name="Color")
+    image = models.ImageField(upload_to='components/wheels/', verbose_name="Wheel Image", null=True,
+                              blank=True)
+
 
     class Meta:
         abstract = True
@@ -629,6 +632,8 @@ class WheelSet(BikeComponent):
     front_wheel = models.ForeignKey(FrontWheel, on_delete=models.PROTECT, verbose_name="Front wheel")
     rear_wheel = models.ForeignKey(RearWheel, on_delete=models.PROTECT, verbose_name="Rear wheel")
     weight_limit = models.IntegerField(verbose_name="Weight limit")
+    wheelset_image = models.ImageField(upload_to='components/wheelsets/', verbose_name="WheelSet Image", null=True,
+                              blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} / {self.wheel_size} TLR:{self.tubeless_ready}"
