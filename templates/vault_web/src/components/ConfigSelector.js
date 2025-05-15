@@ -30,7 +30,8 @@ const ConfigSelector = () => {
           const selectedFrame = frames[selected];
           navigate("/configfork", {
             state: {
-              frame_id: selectedFrame.id
+              frame_id: selectedFrame.id,
+              frameImage: selectedFrame.image
             }
           });
         } else {

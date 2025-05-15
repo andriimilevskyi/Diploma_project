@@ -1,0 +1,19 @@
+.frame-placeholder2 {
+  position: relative;
+
+  height: auto;
+}
+
+.frame-image {
+  width: 350px;
+  display: block;
+}
+
+.fork-overlay {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  width: 70px;
+  transform: translateX(220%) translateY(-15%) rotate(-25deg);
+  pointer-events: none;
+}

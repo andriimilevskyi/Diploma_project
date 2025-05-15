@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import './ConfigSelectorFork.css'; // використовуємо той самий стиль
+import './ConfigSelectorFork.css';
+import './BikePreview.css';
 
 const ConfigFork = () => {
   const [forks, setForks] = useState([]);
@@ -9,7 +10,7 @@ const ConfigFork = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { frame_id } = location.state || {};
+  const { frame_id, frameImage } = location.state || {};
 
   useEffect(() => {
     if (!frame_id) {
@@ -50,11 +51,12 @@ const ConfigFork = () => {
     <div className="frame-selector">
       <div className="main-frame">
         <div className="frame-placeholder2">
-          {selected !== null && forks[selected] ? (
-            <img src={forks[selected].image} alt="fork" />
-          ) : (
-            <p>Оберіть вилку справа</p>
-          )}
+          {frameImage && (
+              <img src={frameImage} alt="Рама" className="frame-image" />
+            )}
+            {selected !== null && forks[selected] && (
+              <img src={forks[selected].image} alt="Вилка" className="fork-overlay" />
+            )}
         </div>
       </div>
 
