@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 # from .models import Case, Order, OrderItem
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
-    FrameSerializer, ForkSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike, Frame, Fork
+    FrameSerializer, ForkSerializer, WheelSetSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame, Fork, WheelSet
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -150,6 +150,41 @@ class ForkRecommendationAPIView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+class WheelSetRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Підібрати сумісний WheelSet за рамою та вилкою",
+        manual_parameters=[
+            openapi.Parameter('frame_id', openapi.IN_QUERY, description="ID рами", type=openapi.TYPE_INTEGER),
+            openapi.Parameter('fork_id', openapi.IN_QUERY, description="ID вилки", type=openapi.TYPE_INTEGER),
+        ]
+    )
+    def get(self, request):
+        frame_id = request.GET.get('frame_id')
+        fork_id = request.GET.get('fork_id')
+
+        if not frame_id or not fork_id:
+            return Response({"error": "Потрібно передати frame_id та fork_id"}, status=400)
+
+        try:
+            frame = Frame.objects.get(id=frame_id)
+            fork = Fork.objects.get(id=fork_id)
+
+            queryset = WheelSet.objects.filter(
+                wheel_size=frame.wheel_size,
+                front_wheel__front_hub__axle_type=fork.axle_type,
+                rear_wheel__rear_hub__axle_type=frame.axle_type
+            )
+
+            serializer = WheelSetSerializer(queryset, many=True)
+            return Response(serializer.data, status=200)
+
+        except Frame.DoesNotExist:
+            return Response({"error": "Рама не знайдена"}, status=404)
+        except Fork.DoesNotExist:
+            return Response({"error": "Вилка не знайдена"}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
 # class OrderViewSet(ModelViewSet):
 #     queryset = Order.objects.all()
 #     serializer_class = OrderSerializer
