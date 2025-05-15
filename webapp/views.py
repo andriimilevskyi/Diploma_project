@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 # from .models import Case, Order, OrderItem
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
-    FrameSerializer, ForkSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike, Frame, Fork
+    FrameSerializer, ForkSerializer, DrivetrainSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame, Fork, Drivetrain
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -149,6 +149,39 @@ class ForkRecommendationAPIView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DrivetrainRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Отримати рекомендовану трансмісію",
+        manual_parameters=[
+            openapi.Parameter('gearing', openapi.IN_QUERY, description="Кількість швидкостей (x-speed)",
+                              type=openapi.TYPE_INTEGER),
+            openapi.Parameter('front_derailleur', openapi.IN_QUERY,
+                              description="Чи потрібен передній перемикач (1 або 0)", type=openapi.TYPE_BOOLEAN),
+        ]
+    )
+    def get(self, request):
+        try:
+            gearing = int(request.GET.get('gearing'))
+            front = request.GET.get('front_derailleur') in ['true', 'True', '1']
+
+            drivetrains = Drivetrain.objects.filter(
+                crankset__gearing=gearing,
+                cassette__gearing=gearing,
+                chain__gearing=gearing,
+                derailleur__gearing=gearing,
+                shifter__gearing=gearing,
+            )
+            if front:
+                drivetrains = drivetrains.exclude(front_derailleur=None)
+            else:
+                drivetrains = drivetrains.filter(front_derailleur=None)
+
+            serializer = DrivetrainSerializer(drivetrains, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 # class OrderViewSet(ModelViewSet):
 #     queryset = Order.objects.all()
