@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 # from .models import Case, Order, OrderItem
-from .models import MTBBike, RoadBike, BicycleDetailedImage, Frame, Fork, WheelSet
+from .models import MTBBike, RoadBike, BicycleDetailedImage, Frame, Fork, WheelSet, FrontWheel, RearWheel
 
 
 class BicycleDetailedImageSerializer(serializers.ModelSerializer):
@@ -94,10 +94,30 @@ class ForkSerializer(serializers.ModelSerializer):
         ]
 
 
+class FrontWheelSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(read_only=True)
+    brand = serializers.CharField(source='brand.name', read_only=True)
+
+    class Meta:
+        model = FrontWheel
+        fields = ['id', 'brand', 'image']
+
+
+class RearWheelSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(read_only=True)
+    brand = serializers.CharField(source='brand.name', read_only=True)
+
+    class Meta:
+        model = RearWheel
+        fields = ['id', 'brand', 'image']
+
+
 class WheelSetSerializer(serializers.ModelSerializer):
     brand = serializers.CharField(source='brand.name', read_only=True)
     wheel_size = serializers.CharField(source='wheel_size.size', read_only=True)
     rotor_mount = serializers.CharField(source='rotor_mount.rotor_mount', read_only=True)
+    front_wheel = FrontWheelSerializer(read_only=True)
+    rear_wheel = RearWheelSerializer(read_only=True)
 
     class Meta:
         model = WheelSet
