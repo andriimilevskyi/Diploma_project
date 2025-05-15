@@ -51,12 +51,8 @@ const ConfigFork = () => {
     <div className="frame-selector">
       <div className="main-frame">
         <div className="frame-placeholder2">
-          {frameImage && (
-              <img src={frameImage} alt="Рама" className="frame-image" />
-            )}
-            {selected !== null && forks[selected] && (
-              <img src={forks[selected].image} alt="Вилка" className="fork-overlay" />
-            )}
+          {selected !== null && forks[selected] && (<img src={forks[selected].image} alt="Вилка" className="fork-overlay" />)}
+          {frameImage && (<img src={frameImage} alt="Рама" className="frame-image" />)}
         </div>
       </div>
 

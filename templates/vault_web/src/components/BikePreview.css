@@ -1,19 +1,24 @@
 .frame-placeholder2 {
   position: relative;
-
   height: auto;
+  width: 350px;
 }
 
 .frame-image {
   width: 350px;
   display: block;
+  position: absolute;
+  z-index: 2;
+  top: -140px;
+  left: -50px;
 }
 
 .fork-overlay {
   position: absolute;
-  top: 18%;
-  left: 50%;
+  top: -97px;
+  left: 130px;
   width: 70px;
   transform: translateX(220%) translateY(-15%) rotate(-25deg);
   pointer-events: none;
+  z-index: 1;
 }
