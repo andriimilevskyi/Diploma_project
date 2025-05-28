@@ -8,8 +8,9 @@ from rest_framework.response import Response
 from rest_framework import status
 # from .models import Case, Order, OrderItem
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
-    FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset
+    FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer, \
+    BottomBracketSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -183,6 +184,44 @@ class CranksetRecommendationAPIView(APIView):
 
         except ValueError:
             return Response({"error": "Invalid input values."}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BottomBracketRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Підбір каретки за рамою та шатуном",
+        manual_parameters=[
+            openapi.Parameter('frame_id', openapi.IN_QUERY, description="ID рами", type=openapi.TYPE_INTEGER),
+            openapi.Parameter('crankset_id', openapi.IN_QUERY, description="ID шатунів", type=openapi.TYPE_INTEGER),
+        ]
+    )
+    def get(self, request):
+        try:
+            frame_id = request.GET.get("frame_id")
+            crankset_id = request.GET.get("crankset_id")
+
+            if not frame_id or not crankset_id:
+                return Response({"error": "Missing frame_id or crankset_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+            frame = Frame.objects.get(id=frame_id)
+            crankset = Crankset.objects.get(id=crankset_id)
+
+            # Підбір за типом, діаметром осі та шириною оболонки (допуск ±1 мм)
+            brackets = BottomBracket.objects.filter(
+                type=frame.bb_standard.bb_name,
+                axle_diameter=crankset.axle_diameter,
+                shell_width__gte=frame.bb_standard.shell_width - 1,
+                shell_width__lte=frame.bb_standard.shell_width + 1
+            )
+
+            serializer = BottomBracketSerializer(brackets, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Frame.DoesNotExist:
+            return Response({"error": "Frame not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Crankset.DoesNotExist:
+            return Response({"error": "Crankset not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
