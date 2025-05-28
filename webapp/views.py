@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 # from .models import Case, Order, OrderItem
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
-    FrameSerializer, ForkSerializer, WheelSetSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike, Frame, Fork, WheelSet
+    FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -147,6 +147,42 @@ class ForkRecommendationAPIView(APIView):
             serializer = ForkSerializer(forks, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CranksetRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Get recommended cranksets by chainline and gearing",
+        manual_parameters=[
+            openapi.Parameter('chainline', openapi.IN_QUERY, description="Required chainline in mm",
+                              type=openapi.TYPE_NUMBER),
+            openapi.Parameter('gearing', openapi.IN_QUERY, description="Number of gears (e.g., 12 for 1x12)",
+                              type=openapi.TYPE_INTEGER)
+        ]
+    )
+    def get(self, request):
+        try:
+            chainline = request.GET.get('chainline')
+            gearing = request.GET.get('gearing')
+
+            if not chainline or not gearing:
+                return Response({"error": "Missing required parameters."}, status=status.HTTP_400_BAD_REQUEST)
+
+            chainline = float(chainline)
+            gearing = int(gearing)
+
+            cranksets = Crankset.objects.filter(
+                gearing=gearing,
+                chainline__gte=chainline - 2,
+                chainline__lte=chainline + 2
+            )
+
+            serializer = CranksetSerializer(cranksets, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except ValueError:
+            return Response({"error": "Invalid input values."}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
