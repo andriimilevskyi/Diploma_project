@@ -9,8 +9,8 @@ from rest_framework import status
 # from .models import Case, Order, OrderItem
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
     FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer, \
-    BottomBracketSerializer, DerailleurSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur
+    BottomBracketSerializer, DerailleurSerializer, ShifterSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur, Shifter
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -248,6 +248,32 @@ class DerailleurRecommendationAPIView(APIView):
             return Response({"error": "Неправильний формат 'gearing'"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ShifterByDerailleurAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Підібрати шифтери за вибраним перемикачем",
+        manual_parameters=[
+            openapi.Parameter('derailleur_id', openapi.IN_QUERY, description="ID вибраного перемикача",
+                              type=openapi.TYPE_INTEGER),
+        ]
+    )
+    def get(self, request):
+        derailleur_id = request.GET.get("derailleur_id")
+
+        if not derailleur_id:
+            return Response({"error": "Потрібно вказати derailleur_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            derailleur = Derailleur.objects.get(id=derailleur_id)
+        except Derailleur.DoesNotExist:
+            return Response({"error": "Перемикач не знайдено"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Підбір шифтерів за кількістю передач
+        shifters = Shifter.objects.filter(gearing=derailleur.gearing)
+
+        serializer = ShifterSerializer(shifters, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class WheelSetRecommendationAPIView(APIView):
