@@ -9,8 +9,9 @@ from rest_framework import status
 # from .models import Case, Order, OrderItem
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
     FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer, \
-    BottomBracketSerializer, DerailleurSerializer, ShifterSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur, Shifter
+    BottomBracketSerializer, DerailleurSerializer, ShifterSerializer, \
+    CassetteSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur, Shifter, Cassette
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -273,6 +274,45 @@ class ShifterByDerailleurAPIView(APIView):
         shifters = Shifter.objects.filter(gearing=derailleur.gearing)
 
         serializer = ShifterSerializer(shifters, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CassetteByDerailleurShifterAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Підібрати касети за перемикачем та манеткою",
+        manual_parameters=[
+            openapi.Parameter('derailleur_id', openapi.IN_QUERY, description="ID перемикача",
+                              type=openapi.TYPE_INTEGER),
+            openapi.Parameter('shifter_id', openapi.IN_QUERY, description="ID манетки", type=openapi.TYPE_INTEGER),
+        ]
+    )
+    def get(self, request):
+        derailleur_id = request.GET.get("derailleur_id")
+        shifter_id = request.GET.get("shifter_id")
+
+        if not derailleur_id or not shifter_id:
+            return Response({"error": "Необхідно передати derailleur_id і shifter_id"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            derailleur = Derailleur.objects.get(id=derailleur_id)
+            shifter = Shifter.objects.get(id=shifter_id)
+        except Derailleur.DoesNotExist:
+            return Response({"error": "Перемикач не знайдено"}, status=status.HTTP_404_NOT_FOUND)
+        except Shifter.DoesNotExist:
+            return Response({"error": "Манетка не знайдена"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Підбір касет
+        if derailleur.gearing != shifter.gearing:
+            return Response({"error": "Gearing перемикача і манетки не співпадає"}, status=status.HTTP_400_BAD_REQUEST)
+
+        cassettes = Cassette.objects.filter(
+            gearing=derailleur.gearing,
+            smallest_gear__gte=derailleur.smallest_gear,
+            biggest_gear__lte=derailleur.biggest_gear,
+        )
+
+        serializer = CassetteSerializer(cassettes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
