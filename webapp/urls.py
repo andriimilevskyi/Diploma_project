@@ -4,7 +4,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.routers import DefaultRouter
 from .views import MTBBikeViewSet, RoadBikeViewSet, FrameRecommendationAPIView, ForkRecommendationAPIView, \
     WheelSetRecommendationAPIView, CranksetRecommendationAPIView, BottomBracketRecommendationAPIView, \
-    DerailleurRecommendationAPIView, ShifterByDerailleurAPIView, CassetteByDerailleurShifterAPIView
+    DerailleurRecommendationAPIView, ShifterByDerailleurAPIView, CassetteByDerailleurShifterAPIView, \
+    ChainByComponentsAPIView
 
 router = DefaultRouter()
 router.register(r'mtb', MTBBikeViewSet, basename='mtb')
@@ -18,6 +19,8 @@ urlpatterns = [
     path('conf/derailleurs/', DerailleurRecommendationAPIView.as_view(), name='derailleurs'),
     path('conf/shifters/', ShifterByDerailleurAPIView.as_view(), name='shifters by derailleur'),
     path('conf/cassettes/', CassetteByDerailleurShifterAPIView.as_view(), name='cassette by derailleur shifter'),
+    path('conf/chains/', ChainByComponentsAPIView.as_view(), name='chins by components'),
+
 ]
 
 urlpatterns += router.urls

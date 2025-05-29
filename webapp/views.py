@@ -10,8 +10,9 @@ from rest_framework import status
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
     FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer, \
     BottomBracketSerializer, DerailleurSerializer, ShifterSerializer, \
-    CassetteSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur, Shifter, Cassette
+    CassetteSerializer, ChainSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur, Shifter, Cassette, \
+    Chain
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -313,6 +314,58 @@ class CassetteByDerailleurShifterAPIView(APIView):
         )
 
         serializer = CassetteSerializer(cassettes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ChainByComponentsAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Підібрати ланцюги за касетою, перемикачем, шатунами та швидкістю",
+        manual_parameters=[
+            openapi.Parameter('cassette_id', openapi.IN_QUERY, description="ID касети", type=openapi.TYPE_INTEGER,
+                              required=True),
+            openapi.Parameter('derailleur_id', openapi.IN_QUERY, description="ID перемикача", type=openapi.TYPE_INTEGER,
+                              required=True),
+            openapi.Parameter('shifter_id', openapi.IN_QUERY, description="ID манетки", type=openapi.TYPE_INTEGER,
+                              required=True),
+            openapi.Parameter('crankset_id', openapi.IN_QUERY, description="ID шатунів", type=openapi.TYPE_INTEGER,
+                              required=True),
+        ]
+    )
+    def get(self, request):
+        cassette_id = request.GET.get("cassette_id")
+        derailleur_id = request.GET.get("derailleur_id")
+        shifter_id = request.GET.get("shifter_id")
+        crankset_id = request.GET.get("crankset_id")
+
+        if not all([cassette_id, derailleur_id, shifter_id, crankset_id]):
+            return Response({"error": "Необхідно передати cassette_id, derailleur_id, shifter_id і crankset_id"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            cassette = Cassette.objects.get(id=cassette_id)
+            derailleur = Derailleur.objects.get(id=derailleur_id)
+            shifter = Shifter.objects.get(id=shifter_id)
+            crankset = Crankset.objects.get(id=crankset_id)
+        except Cassette.DoesNotExist:
+            return Response({"error": "Касета не знайдена"}, status=status.HTTP_404_NOT_FOUND)
+        except Derailleur.DoesNotExist:
+            return Response({"error": "Перемикач не знайдено"}, status=status.HTTP_404_NOT_FOUND)
+        except Shifter.DoesNotExist:
+            return Response({"error": "Манетка не знайдена"}, status=status.HTTP_404_NOT_FOUND)
+        except Crankset.DoesNotExist:
+            return Response({"error": "Шатуни не знайдені"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Перевірка сумісності gearing
+        if not (cassette.gearing == derailleur.gearing == shifter.gearing == crankset.gearing):
+            return Response({"error": "Gearing касети, перемикача, манетки і шатунів не співпадає"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Підбір ланцюгів за gearing (кількістю передач)
+        chains = Chain.objects.filter(gearing=cassette.gearing)
+
+        # За бажанням можна додати ще логіку фільтрації за типом замка, напрямком тощо
+
+        serializer = ChainSerializer(chains, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
