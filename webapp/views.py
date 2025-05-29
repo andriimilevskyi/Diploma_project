@@ -9,8 +9,8 @@ from rest_framework import status
 # from .models import Case, Order, OrderItem
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
     FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer, \
-    BottomBracketSerializer  # , OrderSerializer, OrderItemSerializer
-from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket
+    BottomBracketSerializer, DerailleurSerializer  # , OrderSerializer, OrderItemSerializer
+from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -222,6 +222,30 @@ class BottomBracketRecommendationAPIView(APIView):
             return Response({"error": "Frame not found"}, status=status.HTTP_404_NOT_FOUND)
         except Crankset.DoesNotExist:
             return Response({"error": "Crankset not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DerailleurRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Отримати сумісні задні перемикачі за кількістю передач",
+        manual_parameters=[
+            openapi.Parameter('gearing', openapi.IN_QUERY, description="Кількість передач (x-speed)",
+                              type=openapi.TYPE_INTEGER),
+        ]
+    )
+    def get(self, request):
+        try:
+            gearing = request.GET.get("gearing")
+            if not gearing:
+                return Response({"error": "Параметр 'gearing' обов’язковий."}, status=status.HTTP_400_BAD_REQUEST)
+
+            derailleur_qs = Derailleur.objects.filter(gearing=int(gearing))
+            serializer = DerailleurSerializer(derailleur_qs, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except ValueError:
+            return Response({"error": "Неправильний формат 'gearing'"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

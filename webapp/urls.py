@@ -3,7 +3,8 @@ from rest_framework.routers import DefaultRouter
 # from .views import CaseViewSet, OrderViewSet, OrderItemViewSet
 from rest_framework.routers import DefaultRouter
 from .views import MTBBikeViewSet, RoadBikeViewSet, FrameRecommendationAPIView, ForkRecommendationAPIView, \
-    WheelSetRecommendationAPIView, CranksetRecommendationAPIView, BottomBracketRecommendationAPIView
+    WheelSetRecommendationAPIView, CranksetRecommendationAPIView, BottomBracketRecommendationAPIView, \
+    DerailleurRecommendationAPIView
 
 router = DefaultRouter()
 router.register(r'mtb', MTBBikeViewSet, basename='mtb')
@@ -14,6 +15,7 @@ urlpatterns = [
     path('conf/wheelsets/', WheelSetRecommendationAPIView.as_view(), name='wheelsets'),
     path('conf/cranksets/', CranksetRecommendationAPIView.as_view(), name='cranksets'),
     path('conf/bbs/', BottomBracketRecommendationAPIView.as_view(), name='bottomBrackets'),
+    path('conf/derailleurs/', DerailleurRecommendationAPIView.as_view(), name='derailleurs'),
 ]
 
 urlpatterns += router.urls

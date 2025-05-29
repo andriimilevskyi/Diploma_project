@@ -2,7 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 # from .models import Case, Order, OrderItem
 from .models import MTBBike, RoadBike, BicycleDetailedImage, Frame, Fork, WheelSet, FrontWheel, RearWheel, Crankset, \
-    BottomBracket
+    BottomBracket, Derailleur
 
 
 class BicycleDetailedImageSerializer(serializers.ModelSerializer):
@@ -112,6 +112,17 @@ class BottomBracketSerializer(serializers.ModelSerializer):
     class Meta:
         model = BottomBracket
         fields = ['id', 'brand', 'series', 'type', 'shell_width', 'axle_diameter', 'price', 'weight', 'image']
+
+
+class DerailleurSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+
+    class Meta:
+        model = Derailleur
+        fields = [
+            'id', 'brand', 'series', 'gearing', 'type',
+            'smallest_gear', 'biggest_gear', 'price', 'weight', 'image'
+        ]
 
 
 class FrontWheelSerializer(serializers.ModelSerializer):
