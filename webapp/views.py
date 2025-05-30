@@ -10,9 +10,9 @@ from rest_framework import status
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
     FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer, \
     BottomBracketSerializer, DerailleurSerializer, ShifterSerializer, \
-    CassetteSerializer, ChainSerializer  # , OrderSerializer, OrderItemSerializer
+    CassetteSerializer, ChainSerializer, TyreSerializer  # , OrderSerializer, OrderItemSerializer
 from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur, Shifter, Cassette, \
-    Chain
+    Chain, Tyre
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -403,6 +403,32 @@ class WheelSetRecommendationAPIView(APIView):
             return Response({"error": "Вилка не знайдена"}, status=404)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+class TyreRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Отримати сумісні покришки за параметрами",
+        manual_parameters=[
+            openapi.Parameter('wheel_size', openapi.IN_QUERY, description="Розмір колеса (напр. 29, 700c)", type=openapi.TYPE_STRING),
+            openapi.Parameter('max_tyre_width', openapi.IN_QUERY, description="Максимальна ширина покришки", type=openapi.TYPE_STRING),
+        ]
+    )
+    def get(self, request):
+        wheel_size = request.GET.get('wheel_size')
+        max_tyre_width = request.GET.get('max_tyre_width')
+
+        if not wheel_size or not max_tyre_width:
+            return Response({"error": "Потрібні параметри 'wheel_size' і 'max_tyre_width'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            tyres = Tyre.objects.filter(
+                wheel_size__size=wheel_size,
+                tyre_size__size__lte=max_tyre_width
+            )
+            serializer = TyreSerializer(tyres, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 # class OrderViewSet(ModelViewSet):
 #     queryset = Order.objects.all()
 #     serializer_class = OrderSerializer

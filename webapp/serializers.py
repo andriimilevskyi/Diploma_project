@@ -2,7 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 # from .models import Case, Order, OrderItem
 from .models import MTBBike, RoadBike, BicycleDetailedImage, Frame, Fork, WheelSet, FrontWheel, RearWheel, Crankset, \
-    BottomBracket, Derailleur, Shifter, Cassette, Chain
+    BottomBracket, Derailleur, Shifter, Cassette, Chain, Tyre
 
 
 class BicycleDetailedImageSerializer(serializers.ModelSerializer):
@@ -192,6 +192,19 @@ class WheelSetSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'brand', 'series', 'wheel_size', 'spokes_num', 'rotor_mount',
             'tubeless_ready', 'front_wheel', 'rear_wheel', 'price', 'weight', 'wheelset_image'
+        ]
+
+
+class TyreSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    wheel_size = serializers.CharField(source='wheel_size.size', read_only=True)
+    tyre_size = serializers.CharField(source='tyre_size.size', read_only=True)
+
+    class Meta:
+        model = Tyre
+        fields = [
+            'id', 'brand', 'series', 'wheel_size', 'tyre_size',
+            'tubeless_ready', 'price', 'weight', 'image'
         ]
 # class OrderItemSerializer(serializers.ModelSerializer):
 #     case = serializers.PrimaryKeyRelatedField(queryset=Case.objects.all())  # Only the ID of the related case

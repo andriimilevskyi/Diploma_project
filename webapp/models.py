@@ -599,7 +599,14 @@ class RearWheel(Wheel):
     def __str__(self):
         return f"{self.brand} {self.series} / {self.wheel_size} (Spokes - {self.spokes_num}) TLR:{self.tubeless_ready}"
 
+class Tyre(BikeComponent):
+    wheel_size = models.ForeignKey(WheelSize, on_delete=models.PROTECT, verbose_name="Wheel Size", db_index=True)
+    tyre_size = models.ForeignKey(TyreSize, on_delete=models.PROTECT, verbose_name="Tyre Width", db_index=True)
+    tubeless_ready = models.BooleanField(verbose_name="Tubeless Ready", default=False)
+    image = models.ImageField(upload_to='components/tyres/', verbose_name="Tyre Image", null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.brand.name} {self.model} {self.wheel_size}x{self.tyre_size}"
 # class WheelSet(models.Model):
 #     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
 #     series = models.CharField(max_length=100, verbose_name="Series Name")
