@@ -235,24 +235,37 @@ class BottomBracketRecommendationAPIView(APIView):
 
 class DerailleurRecommendationAPIView(APIView):
     @swagger_auto_schema(
-        operation_summary="Отримати сумісні задні перемикачі за кількістю передач",
+        operation_summary="Отримати сумісні задні перемикачі за ID шатунів",
         manual_parameters=[
-            openapi.Parameter('gearing', openapi.IN_QUERY, description="Кількість передач (x-speed)",
-                              type=openapi.TYPE_INTEGER),
+            openapi.Parameter(
+                'crankset_id',
+                openapi.IN_QUERY,
+                description="ID обраних шатунів",
+                type=openapi.TYPE_INTEGER,
+                required=True
+            )
         ]
     )
     def get(self, request):
         try:
-            gearing = request.GET.get("gearing")
-            if not gearing:
-                return Response({"error": "Параметр 'gearing' обов’язковий."}, status=status.HTTP_400_BAD_REQUEST)
+            crankset_id = request.GET.get("crankset_id")
+            if not crankset_id:
+                return Response({"error": "Параметр 'crankset_id' обов’язковий."}, status=status.HTTP_400_BAD_REQUEST)
 
-            derailleur_qs = Derailleur.objects.filter(gearing=int(gearing))
+            # Спроба отримати шатуни
+            crankset = Crankset.objects.get(pk=crankset_id)
+            gearing = crankset.gearing
+
+            # Підбір перемикачів за кількістю передач
+            derailleur_qs = Derailleur.objects.filter(gearing=gearing)
             serializer = DerailleurSerializer(derailleur_qs, many=True)
+
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+        except Crankset.DoesNotExist:
+            return Response({"error": "Шатуни з таким ID не знайдено."}, status=status.HTTP_404_NOT_FOUND)
         except ValueError:
-            return Response({"error": "Неправильний формат 'gearing'"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Неправильний формат 'crankset_id'."}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -376,36 +389,42 @@ class ChainByComponentsAPIView(APIView):
 
 class WheelSetRecommendationAPIView(APIView):
     @swagger_auto_schema(
-        operation_summary="Підібрати сумісний WheelSet за рамою та вилкою",
+        operation_summary="Підібрати сумісний WheelSet за рамою, вилкою та касетою",
         manual_parameters=[
             openapi.Parameter('frame_id', openapi.IN_QUERY, description="ID рами", type=openapi.TYPE_INTEGER),
             openapi.Parameter('fork_id', openapi.IN_QUERY, description="ID вилки", type=openapi.TYPE_INTEGER),
+            openapi.Parameter('cassette_id', openapi.IN_QUERY, description="ID касети", type=openapi.TYPE_INTEGER),
         ]
     )
     def get(self, request):
         frame_id = request.GET.get('frame_id')
         fork_id = request.GET.get('fork_id')
+        cassette_id = request.GET.get('cassette_id')
 
-        if not frame_id or not fork_id:
-            return Response({"error": "Потрібно передати frame_id та fork_id"}, status=400)
+        if not frame_id or not fork_id or not cassette_id:
+            return Response({"error": "Потрібно передати frame_id, fork_id та cassette_id"}, status=400)
 
         try:
             frame = Frame.objects.get(id=frame_id)
             fork = Fork.objects.get(id=fork_id)
+            cassette = Cassette.objects.get(id=cassette_id)
 
             queryset = WheelSet.objects.filter(
                 wheel_size=frame.wheel_size,
                 front_wheel__front_hub__axle_type=fork.axle_type,
-                rear_wheel__rear_hub__axle_type=frame.axle_type
+                rear_wheel__rear_hub__axle_type=frame.axle_type,
+                rear_wheel__rear_hub__freehub=cassette.freehub_standard
             )
 
             serializer = WheelSetSerializer(queryset, many=True)
             return Response(serializer.data, status=200)
 
         except Frame.DoesNotExist:
-            return Response({"error": "Рама не знайдена"}, status=404)
+            return Response({"error": "Раму не знайдено"}, status=404)
         except Fork.DoesNotExist:
-            return Response({"error": "Вилка не знайдена"}, status=404)
+            return Response({"error": "Вилку не знайдено"}, status=404)
+        except Cassette.DoesNotExist:
+            return Response({"error": "Касету не знайдено"}, status=404)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 
