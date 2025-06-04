@@ -75,7 +75,7 @@ class FrameSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'brand', 'series', 'type',
             'wheel_size', 'tyre_size', 'size', 'material',
-            'color', 'weight', 'price', 'image'
+            'color', 'weight', 'price', 'image', 'chainline'
         ]
 
 

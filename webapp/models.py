@@ -193,6 +193,8 @@ class Frame(BikeComponent):
     max_rider_height = models.DecimalField(max_digits=4, decimal_places=1, verbose_name="Max Rider Height (cm)",
                                            null=True, blank=True)
     bb_standard = models.ForeignKey(BBStandard, on_delete=models.PROTECT, verbose_name="Bottom Bracket Standard")
+    chainline = models.DecimalField(max_digits=4, decimal_places=1, verbose_name="Chainline (mm)",
+                                    null=True, blank=True)
     fork_travel = models.PositiveIntegerField(verbose_name="Fork Travel", blank=True, null=True)
     steerer_type = models.ForeignKey(SteererType, on_delete=models.PROTECT, verbose_name="Steerer Tube Type")
     full_suspension = models.BooleanField(verbose_name="Full Suspension Bike")
@@ -581,7 +583,6 @@ class Wheel(BikeComponent):
     image = models.ImageField(upload_to='components/wheels/', verbose_name="Wheel Image", null=True,
                               blank=True)
 
-
     class Meta:
         abstract = True
 
@@ -599,6 +600,7 @@ class RearWheel(Wheel):
     def __str__(self):
         return f"{self.brand} {self.series} / {self.wheel_size} (Spokes - {self.spokes_num}) TLR:{self.tubeless_ready}"
 
+
 class Tyre(BikeComponent):
     wheel_size = models.ForeignKey(WheelSize, on_delete=models.PROTECT, verbose_name="Wheel Size", db_index=True)
     tyre_size = models.ForeignKey(TyreSize, on_delete=models.PROTECT, verbose_name="Tyre Width", db_index=True)
@@ -607,6 +609,8 @@ class Tyre(BikeComponent):
 
     def __str__(self):
         return f"{self.brand.name} {self.model} {self.wheel_size}x{self.tyre_size}"
+
+
 # class WheelSet(models.Model):
 #     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Brand name")
 #     series = models.CharField(max_length=100, verbose_name="Series Name")
@@ -640,7 +644,7 @@ class WheelSet(BikeComponent):
     rear_wheel = models.ForeignKey(RearWheel, on_delete=models.PROTECT, verbose_name="Rear wheel")
     weight_limit = models.IntegerField(verbose_name="Weight limit")
     wheelset_image = models.ImageField(upload_to='components/wheelsets/', verbose_name="WheelSet Image", null=True,
-                              blank=True)
+                                       blank=True)
 
     def __str__(self):
         return f"{self.brand} {self.series} / {self.wheel_size} TLR:{self.tubeless_ready}"
@@ -709,6 +713,7 @@ class BicycleConfigurator(models.Model):
     # Brake or custom
     brake = models.ForeignKey(Brakes, on_delete=models.PROTECT, verbose_name="Brake")
     # Custom brakes
+    # add tyres
 
     front_rotor = models.ForeignKey(BrakeRotor, on_delete=models.PROTECT, verbose_name="Front Rotor",
                                     related_name='front_rotor_configurations', null=True,
