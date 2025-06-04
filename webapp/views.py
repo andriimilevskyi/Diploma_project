@@ -156,27 +156,32 @@ class ForkRecommendationAPIView(APIView):
 
 class CranksetRecommendationAPIView(APIView):
     @swagger_auto_schema(
-        operation_summary="Get recommended cranksets by chainline and gearing",
+        operation_summary="Отримати сумісні шатунні системи за ID рами",
         manual_parameters=[
-            openapi.Parameter('chainline', openapi.IN_QUERY, description="Required chainline in mm",
-                              type=openapi.TYPE_NUMBER),
-            openapi.Parameter('gearing', openapi.IN_QUERY, description="Number of gears (e.g., 12 for 1x12)",
-                              type=openapi.TYPE_INTEGER)
+            openapi.Parameter('frame_id', openapi.IN_QUERY, description="ID вибраної рами", type=openapi.TYPE_INTEGER),
+            # openapi.Parameter('gearing', openapi.IN_QUERY, description="Кількість передач (наприклад, 12 для 1x12)",
+            #                   type=openapi.TYPE_INTEGER),
         ]
     )
     def get(self, request):
         try:
-            chainline = request.GET.get('chainline')
-            gearing = request.GET.get('gearing')
+            frame_id = request.GET.get('frame_id')
+            # gearing = request.GET.get('gearing')
 
-            if not chainline or not gearing:
-                return Response({"error": "Missing required parameters."}, status=status.HTTP_400_BAD_REQUEST)
+            if not frame_id:  # or not gearing:
+                return Response({"error": "Потрібні параметри 'frame_id'"},  # та 'gearing'.
+                                status=status.HTTP_400_BAD_REQUEST)
 
-            chainline = float(chainline)
-            gearing = int(gearing)
+            frame = Frame.objects.filter(id=frame_id).first()
+            if not frame or not frame.chainline:
+                return Response({"error": "Раму не знайдено або вона не має відповідний chainline."},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            chainline = float(frame.chainline)
+            # gearing = int(gearing)
 
             cranksets = Crankset.objects.filter(
-                gearing=gearing,
+                # gearing=gearing,
                 chainline__gte=chainline - 2,
                 chainline__lte=chainline + 2
             )
@@ -185,7 +190,7 @@ class CranksetRecommendationAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except ValueError:
-            return Response({"error": "Invalid input values."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Неправильні типи параметрів."}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -404,12 +409,15 @@ class WheelSetRecommendationAPIView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 
+
 class TyreRecommendationAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="Отримати сумісні покришки за параметрами",
         manual_parameters=[
-            openapi.Parameter('wheel_size', openapi.IN_QUERY, description="Розмір колеса (напр. 29, 700c)", type=openapi.TYPE_STRING),
-            openapi.Parameter('max_tyre_width', openapi.IN_QUERY, description="Максимальна ширина покришки", type=openapi.TYPE_STRING),
+            openapi.Parameter('wheel_size', openapi.IN_QUERY, description="Розмір колеса (напр. 29, 700c)",
+                              type=openapi.TYPE_STRING),
+            openapi.Parameter('max_tyre_width', openapi.IN_QUERY, description="Максимальна ширина покришки",
+                              type=openapi.TYPE_STRING),
         ]
     )
     def get(self, request):
@@ -417,7 +425,8 @@ class TyreRecommendationAPIView(APIView):
         max_tyre_width = request.GET.get('max_tyre_width')
 
         if not wheel_size or not max_tyre_width:
-            return Response({"error": "Потрібні параметри 'wheel_size' і 'max_tyre_width'."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Потрібні параметри 'wheel_size' і 'max_tyre_width'."},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         try:
             tyres = Tyre.objects.filter(
