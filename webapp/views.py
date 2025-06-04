@@ -182,8 +182,8 @@ class CranksetRecommendationAPIView(APIView):
 
             cranksets = Crankset.objects.filter(
                 # gearing=gearing,
-                chainline__gte=chainline - 2,
-                chainline__lte=chainline + 2
+                chainline__gte=chainline - 1,
+                chainline__lte=chainline + 1
             )
 
             serializer = CranksetSerializer(cranksets, many=True)
