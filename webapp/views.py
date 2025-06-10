@@ -10,9 +10,10 @@ from rest_framework import status
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
     FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer, \
     BottomBracketSerializer, DerailleurSerializer, ShifterSerializer, \
-    CassetteSerializer, ChainSerializer, TyreSerializer  # , OrderSerializer, OrderItemSerializer
+    CassetteSerializer, ChainSerializer, TyreSerializer, HandlebarSerializer, \
+    StemSerializer  # , OrderSerializer, OrderItemSerializer
 from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur, Shifter, Cassette, \
-    Chain, Tyre
+    Chain, Tyre, HandlebarFlat, Stem, Handlebar
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -457,6 +458,73 @@ class TyreRecommendationAPIView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class StemRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Отримати сумісні виноси за параметрами вилки",
+        manual_parameters=[
+            openapi.Parameter(
+                'fork_id',
+                openapi.IN_QUERY,
+                description="ID вилки",
+                type=openapi.TYPE_INTEGER
+            ),
+        ]
+    )
+    def get(self, request):
+        fork_id = request.GET.get('fork_id')
+
+        if not fork_id:
+            return Response({"error": "Потрібно передати 'fork_id'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            fork = Fork.objects.get(id=fork_id)
+
+            stems = Stem.objects.filter(
+                steerer_clamp=fork.stem_diameter
+            )
+
+            serializer = StemSerializer(stems, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Fork.DoesNotExist:
+            return Response({"error": "Вилка не знайдена."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class HandlebarRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Отримати сумісні керма за параметрами виносу",
+        manual_parameters=[
+            openapi.Parameter(
+                'stem_id',
+                openapi.IN_QUERY,
+                description="ID обраного виносу",
+                type=openapi.TYPE_INTEGER
+            ),
+        ]
+    )
+    def get(self, request):
+        stem_id = request.GET.get('stem_id')
+
+        if not stem_id:
+            return Response({"error": "Необхідно передати параметр 'stem_id'."}, status=400)
+
+        try:
+            stem = Stem.objects.get(id=stem_id)
+
+            # Пошук керм, які сумісні за діаметром кріплення
+            handlebars = Handlebar.objects.filter(stem_clamp=stem.handlebar_clamp)
+
+            serializer = HandlebarSerializer(handlebars, many=True)
+            return Response(serializer.data, status=200)
+
+        except Stem.DoesNotExist:
+            return Response({"error": "Винос не знайдено."}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
 # class OrderViewSet(ModelViewSet):
 #     queryset = Order.objects.all()
 #     serializer_class = OrderSerializer

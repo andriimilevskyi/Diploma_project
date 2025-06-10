@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from .views import MTBBikeViewSet, RoadBikeViewSet, FrameRecommendationAPIView, ForkRecommendationAPIView, \
     WheelSetRecommendationAPIView, CranksetRecommendationAPIView, BottomBracketRecommendationAPIView, \
     DerailleurRecommendationAPIView, ShifterByDerailleurAPIView, CassetteByDerailleurShifterAPIView, \
-    ChainByComponentsAPIView, TyreRecommendationAPIView
+    ChainByComponentsAPIView, TyreRecommendationAPIView, StemRecommendationAPIView, HandlebarRecommendationAPIView
 
 router = DefaultRouter()
 router.register(r'mtb', MTBBikeViewSet, basename='mtb')
@@ -21,8 +21,8 @@ urlpatterns = [
     path('conf/cassettes/', CassetteByDerailleurShifterAPIView.as_view(), name='cassette by derailleur shifter'),
     path('conf/chains/', ChainByComponentsAPIView.as_view(), name='chins by components'),
     path('conf/tires/', TyreRecommendationAPIView.as_view(), name='tires'),
-    # path('conf/stems/', .as_view(), name='stems'),
-    # path('conf/handlebars/', .as_view(), name='handlebars'),
+    path('conf/stems/', StemRecommendationAPIView.as_view(), name='stems'),
+    path('conf/handlebars/', HandlebarRecommendationAPIView.as_view(), name='handlebars'),
     # path('conf/grips/', .as_view(), name='grips'),
     # path('conf/brakes/', .as_view(), name='brakes'),
     # path('conf/rotors/', .as_view(), name='rotors'),

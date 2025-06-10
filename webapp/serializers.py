@@ -2,7 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 # from .models import Case, Order, OrderItem
 from .models import MTBBike, RoadBike, BicycleDetailedImage, Frame, Fork, WheelSet, FrontWheel, RearWheel, Crankset, \
-    BottomBracket, Derailleur, Shifter, Cassette, Chain, Tyre
+    BottomBracket, Derailleur, Shifter, Cassette, Chain, Tyre, Stem, HandlebarFlat
 
 
 class BicycleDetailedImageSerializer(serializers.ModelSerializer):
@@ -205,6 +205,34 @@ class TyreSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'brand', 'series', 'wheel_size', 'tyre_size',
             'tubeless_ready', 'price', 'weight', 'image'
+        ]
+
+
+class StemSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    material = serializers.CharField(source='material.material_name', read_only=True)
+    steerer_clamp = serializers.CharField(source='steerer_clamp.diameter', read_only=True)
+    handlebar_clamp = serializers.CharField(source='handlebar_clamp.diameter', read_only=True)
+
+    class Meta:
+        model = Stem
+        fields = [
+            'id', 'brand', 'series', 'material', 'steerer_clamp',
+            'handlebar_clamp', 'length', 'angle', 'stack_height',
+            'price', 'weight', 'image'
+        ]
+
+
+class HandlebarSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    material = serializers.CharField(source='material.material_name', read_only=True)
+    stem_clamp = serializers.CharField(source='stem_clamp.diameter', read_only=True)
+
+    class Meta:
+        model = HandlebarFlat  # або HandlebarDrop, залежно від типу
+        fields = [
+            'id', 'brand', 'series', 'material',
+            'width', 'stem_clamp', 'price', 'weight', 'image'
         ]
 # class OrderItemSerializer(serializers.ModelSerializer):
 #     case = serializers.PrimaryKeyRelatedField(queryset=Case.objects.all())  # Only the ID of the related case
