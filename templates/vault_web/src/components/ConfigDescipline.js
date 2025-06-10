@@ -47,8 +47,8 @@ const ConfigDescipline = () => {
 
                 <div className="in-container">
                     {[
-                        { name: "XC", img: xcimg },
-                        { name: "DH", img: dhimg },
+                        { name: "Крос-кантрі", img: xcimg },
+                        { name: "Даунхіл", img: dhimg },
                         { name: "Місто", img: cityimg },
                         { name: "Траса", img: roadimg },
                         { name: "Гравій", img: gravelimg }

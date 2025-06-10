@@ -6,7 +6,6 @@
 }
 
 .configdescp {
-
     text-align: center;
     font-family: Arial, sans-serif;
 }
@@ -19,27 +18,39 @@
     align-items: flex-end;
 }
 .in-container button{
+    all: unset;
     background-color: white;
     border: none;
+    padding: 0;
+    color: black;
 }
-.in-container button:hover {
+.in-container button:hover .in-block {
     border: 2px solid #005ab9;
+    border-radius: 5px;
+
+    background-color: white;
+    color: black;
 }
-.in-container button.selected {
+.in-container button.selected .in-block {
     border: 5px solid #005ab9;
     border-radius: 5px;
 }
 
 .in-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: inline-block;
     font-size: 20px;
     font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    width: fit-content;
 }
 
 .in-block img {
     width: 200px;
+    height: auto;
+    display: block;
     margin-bottom: 10px;
 }
 
