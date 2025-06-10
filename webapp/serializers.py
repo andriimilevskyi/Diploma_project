@@ -2,7 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 # from .models import Case, Order, OrderItem
 from .models import MTBBike, RoadBike, BicycleDetailedImage, Frame, Fork, WheelSet, FrontWheel, RearWheel, Crankset, \
-    BottomBracket, Derailleur, Shifter, Cassette, Chain, Tyre, Stem, HandlebarFlat
+    BottomBracket, Derailleur, Shifter, Cassette, Chain, Tyre, Stem, HandlebarFlat, Brakes, BrakeRotor
 
 
 class BicycleDetailedImageSerializer(serializers.ModelSerializer):
@@ -234,6 +234,32 @@ class HandlebarSerializer(serializers.ModelSerializer):
             'id', 'brand', 'series', 'material',
             'width', 'stem_clamp', 'price', 'weight', 'image'
         ]
+
+
+class BrakeSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    caliper = serializers.CharField(source='caliper.__str__', read_only=True)
+    lever = serializers.CharField(source='lever.__str__', read_only=True)
+    actuation = serializers.CharField(source='actuation.actuation_type', read_only=True)
+    brake_pads = serializers.CharField(source='brake_pads.name', read_only=True)
+
+    class Meta:
+        model = Brakes
+        fields = [
+            'id', 'brand', 'series', 'type', 'actuation',
+            'caliper', 'lever', 'brake_pads',
+            'front_hose_length', 'price', 'weight'
+        ]
+
+
+class BrakeRotorSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    diameter = serializers.CharField(source='diameter.diameter', read_only=True)
+    mount = serializers.CharField(source='mount.rotor_mount', read_only=True)
+
+    class Meta:
+        model = BrakeRotor
+        fields = ['id', 'brand', 'series', 'diameter', 'mount', 'price', 'weight', 'image']
 # class OrderItemSerializer(serializers.ModelSerializer):
 #     case = serializers.PrimaryKeyRelatedField(queryset=Case.objects.all())  # Only the ID of the related case
 #

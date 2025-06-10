@@ -11,9 +11,9 @@ from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
     FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer, \
     BottomBracketSerializer, DerailleurSerializer, ShifterSerializer, \
     CassetteSerializer, ChainSerializer, TyreSerializer, HandlebarSerializer, \
-    StemSerializer  # , OrderSerializer, OrderItemSerializer
+    StemSerializer, BrakeSerializer, BrakeRotorSerializer  # , OrderSerializer, OrderItemSerializer
 from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBracket, Derailleur, Shifter, Cassette, \
-    Chain, Tyre, HandlebarFlat, Stem, Handlebar
+    Chain, Tyre, HandlebarFlat, Stem, Handlebar, Brakes, BrakeRotor
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
@@ -525,6 +525,94 @@ class HandlebarRecommendationAPIView(APIView):
             return Response({"error": "Винос не знайдено."}, status=404)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+
+class BrakeRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Отримати сумісні гальма за параметрами рами та вилки",
+        manual_parameters=[
+            openapi.Parameter('frame_id', openapi.IN_QUERY, description="ID рами", type=openapi.TYPE_INTEGER),
+            openapi.Parameter('fork_id', openapi.IN_QUERY, description="ID вилки", type=openapi.TYPE_INTEGER),
+        ]
+    )
+    def get(self, request):
+        frame_id = request.GET.get('frame_id')
+        fork_id = request.GET.get('fork_id')
+
+        if not frame_id or not fork_id:
+            return Response({"error": "Потрібно передати 'frame_id' та 'fork_id'."}, status=400)
+
+        try:
+            frame = Frame.objects.get(id=frame_id)
+            fork = Fork.objects.get(id=fork_id)
+
+            # Пошук гальм, де каліпер сумісний одночасно з кріпленням рами і вилки
+            brakes = Brakes.objects.filter(
+                caliper__mount__in=[frame.brake_mount, fork.brake_mount]
+            ).distinct()
+
+            serializer = BrakeSerializer(brakes, many=True)
+            return Response(serializer.data, status=200)
+
+        except Frame.DoesNotExist:
+            return Response({"error": "Рама не знайдена"}, status=404)
+        except Fork.DoesNotExist:
+            return Response({"error": "Вилка не знайдена"}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+
+class BrakeRotorRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Підібрати гальмівні ротори за рамою, вилкою та колесами",
+        manual_parameters=[
+            openapi.Parameter('frame_id', openapi.IN_QUERY, description="ID рами", type=openapi.TYPE_INTEGER),
+            openapi.Parameter('fork_id', openapi.IN_QUERY, description="ID вилки", type=openapi.TYPE_INTEGER),
+            openapi.Parameter('wheelset_id', openapi.IN_QUERY, description="ID wheelset", type=openapi.TYPE_INTEGER),
+        ]
+    )
+    def get(self, request):
+        frame_id = request.GET.get('frame_id')
+        fork_id = request.GET.get('fork_id')
+        wheelset_id = request.GET.get('wheelset_id')
+
+        if not all([frame_id, fork_id, wheelset_id]):
+            return Response({"error": "Необхідно передати frame_id, fork_id та wheelset_id."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            frame = Frame.objects.get(id=frame_id)
+            fork = Fork.objects.get(id=fork_id)
+            wheelset = WheelSet.objects.get(id=wheelset_id)
+
+            # Мінімально допустимий розмір ротора з рами/вилки
+            frame_rotor_diameter = frame.brake_mount.rotor_size.diameter if frame.brake_mount.rotor_size else 0
+            fork_rotor_diameter = fork.brake_mount.rotor_size.diameter if fork.brake_mount.rotor_size else 0
+            required_diameter = max(frame_rotor_diameter, fork_rotor_diameter)
+
+            # Кріплення ротора з переднього/заднього колеса
+            front_mount = wheelset.front_wheel.rotor_mount
+            rear_mount = wheelset.rear_wheel.rotor_mount
+
+            # Враховуємо обидва типи кріплення (якщо різні)
+            mount_ids = {front_mount.id, rear_mount.id}
+
+            rotors = BrakeRotor.objects.filter(
+                mount_id__in=mount_ids,
+                diameter__diameter__gte=required_diameter
+            ).order_by('diameter__diameter')
+
+            serializer = BrakeRotorSerializer(rotors, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Frame.DoesNotExist:
+            return Response({"error": "Рама не знайдена."}, status=status.HTTP_404_NOT_FOUND)
+        except Fork.DoesNotExist:
+            return Response({"error": "Вилка не знайдена."}, status=status.HTTP_404_NOT_FOUND)
+        except WheelSet.DoesNotExist:
+            return Response({"error": "Wheelset не знайдено."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 # class OrderViewSet(ModelViewSet):
 #     queryset = Order.objects.all()
 #     serializer_class = OrderSerializer
