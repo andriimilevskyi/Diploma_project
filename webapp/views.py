@@ -6,6 +6,9 @@ from drf_yasg import openapi
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics.pairwise import cosine_similarity
+import pandas as pd
 # from .models import Case, Order, OrderItem
 from .serializers import MTBBikeSerializer, RoadBikeSerializer, \
     FrameSerializer, ForkSerializer, WheelSetSerializer, CranksetSerializer, \
@@ -613,6 +616,83 @@ class BrakeRotorRecommendationAPIView(APIView):
             return Response({"error": "Wheelset не знайдено."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class MTBRecommendationAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        bike_id = request.GET.get("bike_id")
+
+        if not bike_id:
+            return Response({"error": "Параметр 'bike_id' обов'язковий."}, status=400)
+
+        try:
+            target_bike = MTBBike.objects.get(id=bike_id)
+        except MTBBike.DoesNotExist:
+            return Response({"error": "Велосипед не знайдено."}, status=404)
+
+        bikes = MTBBike.objects.exclude(id=bike_id)
+
+        # Створюємо датафрейм
+        data = []
+        for bike in bikes:
+            data.append({
+                "id": bike.id,
+                "application": bike.frame.application.id if bike.frame.application else 0,
+                "material": bike.frame.material.id if bike.frame.material else 0,
+                "brake_type": bike.brake.type if bike.brake else '',
+                "weight": float(bike.weight) if bike.weight else 0.0,
+                "price": float(bike.price) if bike.price else 0.0,
+            })
+
+        df = pd.DataFrame(data)
+
+        if df.empty:
+            return Response([], status=200)
+
+        # Об'єкт порівняння
+        target_data = {
+            "application": target_bike.frame.application.id if target_bike.frame.application else 0,
+            "material": target_bike.frame.material.id if target_bike.frame.material else 0,
+            "brake_type": target_bike.brake.type if target_bike.brake else '',
+            "weight": float(target_bike.weight) if target_bike.weight else 0.0,
+            "price": float(target_bike.price) if target_bike.price else 0.0,
+        }
+
+        df_full = df.copy()
+        df_full["target_application"] = target_data["application"]
+        df_full["target_material"] = target_data["material"]
+        df_full["target_brake_type"] = target_data["brake_type"]
+        df_full["target_weight"] = target_data["weight"]
+        df_full["target_price"] = target_data["price"]
+
+        # Нормалізація числових
+        scaler = MinMaxScaler()
+        numeric = scaler.fit_transform(df_full[["weight", "price", "target_weight", "target_price"]])
+
+        # Категорії – кодуємо вручну
+        df_full["application_sim"] = df_full["application"] == df_full["target_application"]
+        df_full["material_sim"] = df_full["material"] == df_full["target_material"]
+        df_full["brake_type_sim"] = df_full["brake_type"] == df_full["target_brake_type"]
+
+        # Вектор ознак
+        feature_matrix = pd.DataFrame(numeric, columns=["weight", "price", "target_weight", "target_price"])
+        feature_matrix["application_sim"] = df_full["application_sim"].astype(int)
+        feature_matrix["material_sim"] = df_full["material_sim"].astype(int)
+        feature_matrix["brake_type_sim"] = df_full["brake_type_sim"].astype(int)
+
+        # Розділити на запит і решту
+        query_vector = feature_matrix[["target_weight", "target_price", "application_sim", "material_sim", "brake_type_sim"]].iloc[0].values.reshape(1, -1)
+        corpus = feature_matrix[["weight", "price", "application_sim", "material_sim", "brake_type_sim"]].values
+
+        # Подібність
+        similarity = cosine_similarity(query_vector, corpus)[0]
+
+        df_full["similarity"] = similarity
+        top_ids = df_full.sort_values("similarity", ascending=False)["id"].head(6)
+
+        recommendations = MTBBike.objects.filter(id__in=top_ids)
+        serializer = MTBBikeSerializer(recommendations, many=True)
+        return Response(serializer.data, status=200)
 # class OrderViewSet(ModelViewSet):
 #     queryset = Order.objects.all()
 #     serializer_class = OrderSerializer

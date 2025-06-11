@@ -6,7 +6,7 @@ from .views import MTBBikeViewSet, RoadBikeViewSet, FrameRecommendationAPIView, 
     WheelSetRecommendationAPIView, CranksetRecommendationAPIView, BottomBracketRecommendationAPIView, \
     DerailleurRecommendationAPIView, ShifterByDerailleurAPIView, CassetteByDerailleurShifterAPIView, \
     ChainByComponentsAPIView, TyreRecommendationAPIView, StemRecommendationAPIView, HandlebarRecommendationAPIView, \
-    BrakeRecommendationAPIView, BrakeRotorRecommendationAPIView
+    BrakeRecommendationAPIView, BrakeRotorRecommendationAPIView, MTBRecommendationAPIView
 
 router = DefaultRouter()
 router.register(r'mtb', MTBBikeViewSet, basename='mtb')
@@ -30,6 +30,7 @@ urlpatterns = [
     # path('conf/seatposts/', .as_view(), name='seatposts'),
     # path('conf/seats/', .as_view(), name='seats'),
     # path('conf/pedals/', .as_view(), name='pedals'),
+    path("recommendations/mtb/", MTBRecommendationAPIView.as_view(), name="mtb-recommendations"),
 
 ]
 
