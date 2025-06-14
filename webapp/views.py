@@ -619,6 +619,17 @@ class BrakeRotorRecommendationAPIView(APIView):
 
 
 class MTBRecommendationAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary="GET рекомендації для MTB велосипедів",
+        manual_parameters=[
+            openapi.Parameter(
+                'bike_id', openapi.IN_QUERY,
+                description="ID велосипеда, для якого шукаються рекомендації",
+                type=openapi.TYPE_INTEGER,
+                required=True
+            )
+        ]
+    )
     def get(self, request, *args, **kwargs):
         bike_id = request.GET.get("bike_id")
 
@@ -681,7 +692,9 @@ class MTBRecommendationAPIView(APIView):
         feature_matrix["brake_type_sim"] = df_full["brake_type_sim"].astype(int)
 
         # Розділити на запит і решту
-        query_vector = feature_matrix[["target_weight", "target_price", "application_sim", "material_sim", "brake_type_sim"]].iloc[0].values.reshape(1, -1)
+        query_vector = \
+        feature_matrix[["target_weight", "target_price", "application_sim", "material_sim", "brake_type_sim"]].iloc[
+            0].values.reshape(1, -1)
         corpus = feature_matrix[["weight", "price", "application_sim", "material_sim", "brake_type_sim"]].values
 
         # Подібність
@@ -693,6 +706,7 @@ class MTBRecommendationAPIView(APIView):
         recommendations = MTBBike.objects.filter(id__in=top_ids)
         serializer = MTBBikeSerializer(recommendations, many=True)
         return Response(serializer.data, status=200)
+
 # class OrderViewSet(ModelViewSet):
 #     queryset = Order.objects.all()
 #     serializer_class = OrderSerializer
