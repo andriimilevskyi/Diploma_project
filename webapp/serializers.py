@@ -1,7 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 # from .models import Case, Order, OrderItem
-from .models import MTBBike, RoadBike, BicycleDetailedImage, Frame, Fork, WheelSet, FrontWheel, RearWheel
+from .models import MTBBike, RoadBike, BicycleDetailedImage, Frame, Fork, WheelSet, FrontWheel, RearWheel, Crankset, \
+    BottomBracket, Derailleur, Shifter, Cassette, Chain, Tyre, Stem, HandlebarFlat, Brakes, BrakeRotor
 
 
 class BicycleDetailedImageSerializer(serializers.ModelSerializer):
@@ -74,7 +75,7 @@ class FrameSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'brand', 'series', 'type',
             'wheel_size', 'tyre_size', 'size', 'material',
-            'color', 'weight', 'price', 'image'
+            'color', 'weight', 'price', 'image', 'chainline'
         ]
 
 
@@ -91,6 +92,73 @@ class ForkSerializer(serializers.ModelSerializer):
             'wheel_size', 'travel', 'offset', 'stem_diameter',
             'axle_type', 'brake_mount', 'remote', 'tyre_size',
             'rotor_size_max', 'price', 'weight', 'image'
+        ]
+
+
+class CranksetSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+
+    class Meta:
+        model = Crankset
+        fields = [
+            'id', 'brand', 'series', 'gradation', 'gearing',
+            'crank_arm_length', 'chainline', 'price', 'weight', 'image'
+        ]
+
+
+class BottomBracketSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+
+    class Meta:
+        model = BottomBracket
+        fields = ['id', 'brand', 'series', 'type', 'shell_width', 'axle_diameter', 'price', 'weight', 'image']
+
+
+class DerailleurSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+
+    class Meta:
+        model = Derailleur
+        fields = [
+            'id', 'brand', 'series', 'gearing', 'type',
+            'smallest_gear', 'biggest_gear', 'price', 'weight', 'image'
+        ]
+
+
+class ShifterSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    mount = serializers.CharField(source='mount.mount_standard', read_only=True)
+
+    class Meta:
+        model = Shifter
+        fields = [
+            'id', 'brand', 'series', 'gearing', 'type',
+            'mount', 'price', 'weight', 'image'
+        ]
+
+
+class CassetteSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    freehub_standard = serializers.CharField(source='freehub_standard.freehub_name', read_only=True)
+
+    class Meta:
+        model = Cassette
+        fields = [
+            'id', 'brand', 'series', 'gearing', 'gradation',
+            'gradation_all', 'smallest_gear', 'biggest_gear',
+            'freehub_standard', 'weight', 'price', 'image'
+        ]
+
+
+class ChainSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+
+    class Meta:
+        model = Chain
+        fields = [
+            'id', 'brand', 'series',
+            'links_num', 'gearing', 'clousing_type',
+            'directional', 'price', 'weight', 'image',
         ]
 
 
@@ -125,6 +193,73 @@ class WheelSetSerializer(serializers.ModelSerializer):
             'id', 'brand', 'series', 'wheel_size', 'spokes_num', 'rotor_mount',
             'tubeless_ready', 'front_wheel', 'rear_wheel', 'price', 'weight', 'wheelset_image'
         ]
+
+
+class TyreSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    wheel_size = serializers.CharField(source='wheel_size.size', read_only=True)
+    tyre_size = serializers.CharField(source='tyre_size.size', read_only=True)
+
+    class Meta:
+        model = Tyre
+        fields = [
+            'id', 'brand', 'series', 'wheel_size', 'tyre_size',
+            'tubeless_ready', 'price', 'weight', 'image'
+        ]
+
+
+class StemSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    material = serializers.CharField(source='material.material_name', read_only=True)
+    steerer_clamp = serializers.CharField(source='steerer_clamp.diameter', read_only=True)
+    handlebar_clamp = serializers.CharField(source='handlebar_clamp.diameter', read_only=True)
+
+    class Meta:
+        model = Stem
+        fields = [
+            'id', 'brand', 'series', 'material', 'steerer_clamp',
+            'handlebar_clamp', 'length', 'angle', 'stack_height',
+            'price', 'weight', 'image'
+        ]
+
+
+class HandlebarSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    material = serializers.CharField(source='material.material_name', read_only=True)
+    stem_clamp = serializers.CharField(source='stem_clamp.diameter', read_only=True)
+
+    class Meta:
+        model = HandlebarFlat  # або HandlebarDrop, залежно від типу
+        fields = [
+            'id', 'brand', 'series', 'material',
+            'width', 'stem_clamp', 'price', 'weight', 'image'
+        ]
+
+
+class BrakeSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    caliper = serializers.CharField(source='caliper.__str__', read_only=True)
+    lever = serializers.CharField(source='lever.__str__', read_only=True)
+    actuation = serializers.CharField(source='actuation.actuation_type', read_only=True)
+    brake_pads = serializers.CharField(source='brake_pads.name', read_only=True)
+
+    class Meta:
+        model = Brakes
+        fields = [
+            'id', 'brand', 'series', 'type', 'actuation',
+            'caliper', 'lever', 'brake_pads',
+            'front_hose_length', 'price', 'weight'
+        ]
+
+
+class BrakeRotorSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name', read_only=True)
+    diameter = serializers.CharField(source='diameter.diameter', read_only=True)
+    mount = serializers.CharField(source='mount.rotor_mount', read_only=True)
+
+    class Meta:
+        model = BrakeRotor
+        fields = ['id', 'brand', 'series', 'diameter', 'mount', 'price', 'weight', 'image']
 # class OrderItemSerializer(serializers.ModelSerializer):
 #     case = serializers.PrimaryKeyRelatedField(queryset=Case.objects.all())  # Only the ID of the related case
 #
