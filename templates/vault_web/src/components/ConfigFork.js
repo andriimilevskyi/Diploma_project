@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ConfigContext } from './ConfigContext';
+import { ConfigContext, ConfigProvider } from '../components/ConfigContext.js';
 import './ConfigSelectorFork.css';
 import './BikePreview.css';
 
@@ -87,9 +87,7 @@ const ConfigFork = () => {
       </div>
 
       <div className="navigation-buttons">
-        <button className="prev-btn">
-          <Link to="/configselector" className="next-link">← Назад</Link>
-        </button>
+        <button className="prev-btn" onClick={() => navigate('/configselector')}>← Назад</button>
         <button className="next-btn" onClick={handleNext}>Далі →</button>
       </div>
     </div>
