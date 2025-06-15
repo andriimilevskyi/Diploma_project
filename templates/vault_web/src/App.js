@@ -3,7 +3,7 @@ import './App.css';
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { ConfigProvider } from './ConfigContext';
+import { ConfigContext, ConfigProvider } from './components/ConfigContext.js'
 import ConfigMeasure from "./components/ConfigMeasure.js";
 import ConfigDescipline from "./components/ConfigDescipline.js";
 import ConfigSelector from "./components/ConfigSelector.js";

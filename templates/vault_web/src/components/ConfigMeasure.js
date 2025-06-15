@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { ConfigContext } from "../components/ConfigContext";
 import './ConfigMeasure.css';
 import heightimg from '../assets/images/Height.png';
 import inseamimg from '../assets/images/Inseam.png';
@@ -9,18 +10,21 @@ const ConfigMeasure = () => {
     const [innerHeight, setInnerHeight] = useState('');
     const navigate = useNavigate();
 
+    const { setConfig } = useContext(ConfigContext);
+
     const handleSubmit = () => {
         if (!height || !innerHeight) {
             alert("Будь ласка, введіть усі дані.");
             return;
         }
 
-        navigate("/configdescipline", {
-            state: {
-                height: Number(height),
-                inseam: Number(innerHeight),
-            }
-        });
+        setConfig(prev => ({
+            ...prev,
+            height: Number(height),
+            inseam: Number(innerHeight)
+        }));
+
+        navigate("/configdescipline");
     };
 
     return (

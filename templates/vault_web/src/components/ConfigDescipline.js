@@ -1,15 +1,11 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ConfigContext } from "../components/ConfigContext";
 import './ConfigDescipline.css';
-import xcimg from "../assets/images/XC.png";
-import dhimg from "../assets/images/DH.png";
-import cityimg from "../assets/images/City.png";
-import roadimg from "../assets/images/Road.png";
-import gravelimg from "../assets/images/Gravel.png";
 
 const disciplineMap = {
-    XC: 1,
-    DH: 2,
+    "Крос-кантрі": 1,
+    "Даунхіл": 2,
     "Місто": 3,
     "Траса": 4,
     "Гравій": 5,
@@ -17,9 +13,10 @@ const disciplineMap = {
 
 const ConfigDescipline = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const { height, inseam } = location.state || {};
-    const [selectedDiscipline, setSelectedDiscipline] = useState(null);
+    const { config, setConfig } = useContext(ConfigContext);
+    const [selectedDiscipline, setSelectedDiscipline] = useState(
+      Object.keys(disciplineMap).find(key => disciplineMap[key] === config.discipline) || null
+    );
 
     const handleSelect = (discipline) => {
         setSelectedDiscipline(discipline);
@@ -31,13 +28,12 @@ const ConfigDescipline = () => {
             return;
         }
 
-        navigate("/configselector", {
-            state: {
-                height,
-                inseam,
-                discipline: disciplineMap[selectedDiscipline],
-            },
-        });
+        setConfig(prev => ({
+          ...prev,
+          discipline: disciplineMap[selectedDiscipline]
+        }));
+
+        navigate("/configselector");
     };
 
     return (
@@ -46,21 +42,14 @@ const ConfigDescipline = () => {
                 <h2>Оберіть дисципліну</h2>
 
                 <div className="in-container">
-                    {[
-                        { name: "Крос-кантрі", img: xcimg },
-                        { name: "Даунхіл", img: dhimg },
-                        { name: "Місто", img: cityimg },
-                        { name: "Траса", img: roadimg },
-                        { name: "Гравій", img: gravelimg }
-                    ].map((item) => (
+                    {Object.keys(disciplineMap).map((name) => (
                         <button
-                            key={item.name}
-                            onClick={() => handleSelect(item.name)}
-                            className={selectedDiscipline === item.name ? "selected" : ""}
+                            key={name}
+                            onClick={() => handleSelect(name)}
+                            className={selectedDiscipline === name ? "selected" : ""}
                         >
                             <div className="in-block">
-                                <img src={item.img} alt={item.name} />
-                                {item.name}
+                                {name}
                             </div>
                         </button>
                     ))}
