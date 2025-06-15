@@ -6,12 +6,13 @@ from .views import MTBBikeViewSet, RoadBikeViewSet, FrameRecommendationAPIView, 
     WheelSetRecommendationAPIView, CranksetRecommendationAPIView, BottomBracketRecommendationAPIView, \
     DerailleurRecommendationAPIView, ShifterByDerailleurAPIView, CassetteByDerailleurShifterAPIView, \
     ChainByComponentsAPIView, TyreRecommendationAPIView, StemRecommendationAPIView, HandlebarRecommendationAPIView, \
-    BrakeRecommendationAPIView, BrakeRotorRecommendationAPIView, MTBRecommendationAPIView
+    BrakeRecommendationAPIView, BrakeRotorRecommendationAPIView, MTBRecommendationAPIView, MixedBikeListAPIView
 
 router = DefaultRouter()
 router.register(r'mtb', MTBBikeViewSet, basename='mtb')
 router.register(r'road', RoadBikeViewSet, basename='road')
 urlpatterns = [
+    path("bicycles", MixedBikeListAPIView.as_view(), name="mixed-bicycles"),
     path('conf/frames/', FrameRecommendationAPIView.as_view(), name='frames'),
     path('conf/forks/', ForkRecommendationAPIView.as_view(), name='forks'),
     path('conf/wheelsets/', WheelSetRecommendationAPIView.as_view(), name='wheelsets'),

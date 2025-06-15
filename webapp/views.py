@@ -20,6 +20,34 @@ from .models import MTBBike, RoadBike, Frame, Fork, WheelSet, Crankset, BottomBr
 from django.db.models import F, ExpressionWrapper, FloatField
 from django.db.models.functions import Abs
 from rest_framework import mixins, viewsets
+import random
+
+
+class MixedBikeListAPIView(APIView):
+    """
+    GET: Повертає змішаний список шосейних і гірських велосипедів у випадковому порядку.
+    """
+
+    @swagger_auto_schema(
+        operation_summary="Отримати змішаний список велосипедів (Головна сторінка)",
+        operation_description="Повертає випадково змішаний список велосипедів.",
+        responses={200: openapi.Response("Список велосипедів")})
+    def get(self, request):
+        mtb_bikes = list(MTBBike.objects.all())
+        road_bikes = list(RoadBike.objects.all())
+
+        # Список пар: (велосипед, тип)
+        mtb_serialized = [(MTBBikeSerializer(bike).data, "mtb") for bike in mtb_bikes]
+        road_serialized = [(RoadBikeSerializer(bike).data, "road") for bike in road_bikes]
+
+        # Об’єднуємо та перемішуємо
+        combined = mtb_serialized + road_serialized
+        random.shuffle(combined)
+
+        # Виводимо без мітки типу, або лишаємо якщо корисно для фронту
+        mixed_result = [item[0] for item in combined]
+
+        return Response(mixed_result, status=status.HTTP_200_OK)
 
 
 class MTBBikeViewSet(mixins.ListModelMixin,
@@ -693,8 +721,8 @@ class MTBRecommendationAPIView(APIView):
 
         # Розділити на запит і решту
         query_vector = \
-        feature_matrix[["target_weight", "target_price", "application_sim", "material_sim", "brake_type_sim"]].iloc[
-            0].values.reshape(1, -1)
+            feature_matrix[["target_weight", "target_price", "application_sim", "material_sim", "brake_type_sim"]].iloc[
+                0].values.reshape(1, -1)
         corpus = feature_matrix[["weight", "price", "application_sim", "material_sim", "brake_type_sim"]].values
 
         # Подібність
