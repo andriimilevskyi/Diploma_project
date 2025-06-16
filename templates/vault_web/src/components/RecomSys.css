@@ -1,0 +1,19 @@
+.recommendation-section {
+  margin-top: 40px;
+  padding: 20px;
+  background: #f4f4f4;
+}
+
+.recommendation-list {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.recommendation-card {
+  min-width: 200px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+}

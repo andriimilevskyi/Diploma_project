@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 import {useParams} from "react-router-dom"; // Для отримання параметра з URL
 import './ProductDetails.css';
 import useProducts from './hook';
-import { useContext } from "react";
 import { CartContext } from "./CartContext";
 
 const ProductDetails = () => {
     const { id } = useParams();
     const { products, loading, error } = useProducts();
     const { addToCart } = useContext(CartContext);
+
+        useEffect(() => {
+        localStorage.setItem("lastViewedProduct", id); // Зберігаємо ID
+      }, [id]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;

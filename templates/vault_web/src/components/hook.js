@@ -7,7 +7,7 @@ const useProducts = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/mtb/')
+        axios.get('http://127.0.0.1:8000/api/bicycles/')
             .then(response => {
                 setProducts(response.data);
                 setLoading(false);
