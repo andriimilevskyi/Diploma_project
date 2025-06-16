@@ -3,63 +3,69 @@ import { useNavigate } from "react-router-dom";
 import { ConfigContext } from "../components/ConfigContext";
 import './ConfigDescipline.css';
 
+import xcimg from "../assets/images/XC.png";
+import dhimg from "../assets/images/DH.png";
+import cityimg from "../assets/images/City.png";
+import roadimg from "../assets/images/Road.png";
+import gravelimg from "../assets/images/Gravel.png";
+
+// Тепер disciplineMap має об'єкти з name, value, img
 const disciplineMap = {
-    "Крос-кантрі": 1,
-    "Даунхіл": 2,
-    "Місто": 3,
-    "Траса": 4,
-    "Гравій": 5,
+  "Крос-кантрі": { value: 1, img: xcimg },
+  "Даунхіл": { value: 2, img: dhimg },
+  "Місто": { value: 3, img: cityimg },
+  "Траса": { value: 4, img: roadimg },
+  "Гравій": { value: 5, img: gravelimg }
 };
 
 const ConfigDescipline = () => {
-    const navigate = useNavigate();
-    const { config, setConfig } = useContext(ConfigContext);
-    const [selectedDiscipline, setSelectedDiscipline] = useState(
-      Object.keys(disciplineMap).find(key => disciplineMap[key] === config.discipline) || null
-    );
+  const navigate = useNavigate();
+  const { config, setConfig } = useContext(ConfigContext);
 
-    const handleSelect = (discipline) => {
-        setSelectedDiscipline(discipline);
-    };
+  const [selectedDiscipline, setSelectedDiscipline] = useState(
+    Object.entries(disciplineMap).find(([_, val]) => val.value === config.discipline)?.[0] || null
+  );
 
-    const handleSubmit = () => {
-        if (!selectedDiscipline) {
-            alert("Будь ласка, оберіть дисципліну.");
-            return;
-        }
+  const handleSelect = (discipline) => {
+    setSelectedDiscipline(discipline);
+  };
 
-        setConfig(prev => ({
-          ...prev,
-          discipline: disciplineMap[selectedDiscipline]
-        }));
+  const handleSubmit = () => {
+    if (!selectedDiscipline) return;
 
-        navigate("/configselector");
-    };
+    setConfig(prev => ({
+      ...prev,
+      discipline: disciplineMap[selectedDiscipline].value
+    }));
 
-    return (
-        <div className="descrcon">
-            <div className="configdescp">
-                <h2>Оберіть дисципліну</h2>
+    navigate("/configselector");
+  };
 
-                <div className="in-container">
-                    {Object.keys(disciplineMap).map((name) => (
-                        <button
-                            key={name}
-                            onClick={() => handleSelect(name)}
-                            className={selectedDiscipline === name ? "selected" : ""}
-                        >
-                            <div className="in-block">
-                                {name}
-                            </div>
-                        </button>
-                    ))}
-                </div>
+  return (
+    <div className="descrcon">
+      <div className="configdescp">
+        <h2>Оберіть дисципліну</h2>
 
-                <button className="prev-btn" onClick={() => navigate("/configmeasure")}>← Назад</button>
-                <button className="next-btn" onClick={handleSubmit}>Далі →</button>
-            </div>
+        <div className="in-container">
+          {Object.entries(disciplineMap).map(([name, data]) => (
+            <button
+              key={name}
+              onClick={() => handleSelect(name)}
+              className={selectedDiscipline === name ? "selected" : ""}
+            >
+              <div className="in-block">
+                <img src={data.img} alt={name} />
+                <span>{name}</span>
+              </div>
+            </button>
+          ))}
         </div>
-    );
+
+        <button className="prev-btn" onClick={() => navigate("/configmeasure")}>← Назад</button>
+        <button className="next-btn" onClick={handleSubmit}>Далі →</button>
+      </div>
+    </div>
+  );
 };
 
 export default ConfigDescipline;
