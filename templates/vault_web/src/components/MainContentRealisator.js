@@ -4,6 +4,7 @@ import ProductGrid from "./ProductGrid";
 import useProducts from './hook';
 import { Link } from 'react-router-dom';
 import './RecomSys.css';
+import RecomSys from "./RecomSys";
 
 const MainContentRealisator = () => {
   const [filters, setFilters] = useState({
@@ -24,18 +25,6 @@ const MainContentRealisator = () => {
 
   const [appliedFilters, setAppliedFilters] = useState(null);
   const { products, loading, error } = useProducts();
-
-  const [recommendations, setRecommendations] = useState([]);
-
-  useEffect(() => {
-    const productId = localStorage.getItem("lastViewedProduct");
-    if (productId) {
-      fetch(`http://127.0.0.1:8000/api/recommendations/mtb/?bike_id=${productId}`)
-        .then(res => res.json())
-        .then(data => setRecommendations(data))
-        .catch(err => console.error("Помилка при отриманні рекомендацій:", err));
-    }
-  }, []);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -83,29 +72,22 @@ const MainContentRealisator = () => {
 
   return (
     <div className="main-content">
-      {/* РЕКОМЕНДАЦІЇ ПІД ХЕДЕРОМ */}
-      {recommendations.length > 0 && (
-        <div className="recommendation-strip">
-          <h3>Рекомендовано для вас</h3>
-          <div className="recommendation-list">
-            {recommendations.map((rec) => (
-              <Link to={`/product/${rec.id}`} key={rec.id} className="recommendation-card">
-                <img src={rec.image} alt={rec.series} />
-                <p>{rec.series}</p>
-                <p>{rec.price}€</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ФІЛЬТРИ ТА ПРОДУКТИ */}
+        <div>
       <FilterMenu
         filters={filters}
         onFilterChange={handleFilterChange}
         onApplyFilters={handleApplyFilters}
       />
-      <ProductGrid products={filteredProducts} />
+      </div>
+      <div>
+        <div>
+          <RecomSys />
+        </div>
+        <div>
+              <h3>Каталог</h3>
+          <ProductGrid products={filteredProducts} />
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,19 +1,62 @@
-.recommendation-section {
-  margin-top: 40px;
-  padding: 20px;
-  background: #f4f4f4;
+.recommendation-strip {
+  position: relative;
+  width: 100%;
+  padding: 0 40px; /* щоб кнопки не перекривали контент */
+  margin-bottom: 30px;
 }
 
-.recommendation-list {
+.recommendation-scroll {
   display: flex;
-  gap: 20px;
-  overflow-x: auto;
+  gap: 10px;
+  overflow: hidden;
+  padding-left: 100px;
 }
 
 .recommendation-card {
-  min-width: 200px;
+  flex: 0 0 18%;
+  max-width: 18%;
+  box-sizing: border-box;
   border: 1px solid #ccc;
-  padding: 10px;
-  background: white;
-  border-radius: 10px;
+  padding: 8px;
+  text-align: center;
+}
+
+.recommendation-card img {
+  width: 100%;
+  height: auto;
+  object-fit: contain; /* або cover, залежно від бажаного ефекту */
+  display: block;
+}
+
+/* Загальні стилі для кнопок */
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: black;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0 8px;
+  line-height: 1;
+}
+
+/* Підсвічування кнопки при наведенні */
+.carousel-button:hover:not(:disabled) {
+  color: #333;
+}
+
+.carousel-button:disabled {
+  color: #999;
+  cursor: default;
+}
+
+.carousel-button.prev {
+  left: 0;
+}
+
+.carousel-button.next {
+  right: 0;
 }
