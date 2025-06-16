@@ -281,21 +281,20 @@ class DrivetrainAdmin(admin.ModelAdmin):
 
 @admin.register(RoadBike)
 class RoadBikeAdmin(admin.ModelAdmin):
-    list_display = ("brand", "series", "preview_image")
+    list_display = ("brand", "series", "frame", "fork", "wheelset", "drivetrain", "brake", "handlebar", "preview_image")
+    list_select_related = ("brand", "frame", "fork", "wheelset", "drivetrain", "brake", "handlebar")
     inlines = [BicycleDetailedImageInline]
 
+    readonly_fields = ["preview_image_admin"]
 
-readonly_fields = ["preview_image_admin"]
+    def preview_image_admin(self, obj):
+        if obj.preview_image:
+            return mark_safe(
+                f'<img src="{obj.preview_image.url}" width="500" height="300" style="object-fit: cover; border-radius: 5px;" />'
+            )
+        return "No Image"
 
-
-def preview_image_admin(self, obj):
-    if obj.preview_image:
-        return mark_safe(
-            f'<img src="{obj.preview_image.url}" width="500" height="300" style="object-fit: cover; border-radius: 5px;"/>')
-    return "No Image"
-
-
-preview_image_admin.short_description = "Preview Image"
+    preview_image_admin.short_description = "Preview Image"
 
 
 @admin.register(MTBBike)
