@@ -70,7 +70,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
                 checked={filters.magsafe}
                 onChange={handleCheckboxChange}
               />
-              MagSafe® Compatible
+              Крос-кантрі
             </li>
             <li>
               <input
@@ -79,7 +79,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
                 checked={filters.thin}
                 onChange={handleCheckboxChange}
               />
-              Thin Protective
+              Даунхіл
             </li>
             <li>
               <input
@@ -88,7 +88,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
                 checked={filters.designs}
                 onChange={handleCheckboxChange}
               />
-              Spec Designs
+              Траса
             </li>
           </ul>
         )}
@@ -185,7 +185,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
                 checked={filters.magsafe}
                 onChange={handleCheckboxChange}
               />
-              MagSafe® Compatible
+              Ланцюгова трансмісія
             </li>
             <li>
               <input
@@ -194,7 +194,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
                 checked={filters.thin}
                 onChange={handleCheckboxChange}
               />
-              Thin Protective
+              Втулкова трансмісія
             </li>
             <li>
               <input
@@ -203,7 +203,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
                 checked={filters.designs}
                 onChange={handleCheckboxChange}
               />
-              Spec Designs
+              Електронна трансмісія
             </li>
           </ul>
         )}
@@ -223,7 +223,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
                 checked={filters.magsafe}
                 onChange={handleCheckboxChange}
               />
-              MagSafe® Compatible
+              XS
             </li>
             <li>
               <input
@@ -232,7 +232,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
                 checked={filters.thin}
                 onChange={handleCheckboxChange}
               />
-              Thin Protective
+              S
             </li>
             <li>
               <input
@@ -241,7 +241,7 @@ const FilterMenu = ({ filters, onFilterChange, onApplyFilters }) => {
                 checked={filters.designs}
                 onChange={handleCheckboxChange}
               />
-              Spec Designs
+              M
             </li>
           </ul>
         )}
